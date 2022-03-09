@@ -1,0 +1,7 @@
+#- platform: climate_group
+#  name: 'Termostat Salon'
+#  temperature_unit: C  # default to celsius, 'C' or 'F'
+#  entities:
+#  - climate.termostat_salon_kuchnia
+#  - climate.termostat_salon_okno
+#  - climate.termostat_salon_balkon

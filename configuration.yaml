@@ -1,0 +1,101 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+scene: !include scenes.yaml
+climate: !include climates.yaml
+sensor: !include sensors.yaml
+template: !include template.yaml
+binary_sensor: !include binary_sensors.yaml
+light: !include lights.yaml
+shell_command: !include shell_commands.yaml
+
+automation manual: !include_dir_merge_list automations/
+automation ui: !include automations.yaml
+
+input_number: !include_dir_merge_named input_number/
+input_datetime: !include_dir_merge_named input_datetime/
+
+script: !include_dir_merge_named scripts/
+
+homeassistant:
+  customize: !include customize.yaml
+
+google:
+  client_id: !secret google_calendar_client_id
+  client_secret: !secret google_calendar_client_secret
+
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_token
+    allowed_chat_ids:
+      - !secret main_chat_id
+
+notify:
+  - platform: telegram
+    name: telegram_Zollek
+    chat_id: !secret main_chat_id
+
+spotify:
+  client_id: !secret spotify_client_id
+  client_secret: !secret spotify_client_secret
+
+media_player:
+  - platform: onkyo
+    host: !secret onkyo_ip
+    name: "Onkyo TX-NR656"
+
+# Mapa odkurzacza Roborock
+camera:
+  - platform: xiaomi_cloud_map_extractor
+    host: !secret roborock_vacuum_s5_host
+    token: !secret roborock_vacuum_s5_token
+    username: !secret roborock_vacuum_s5_username
+    password: !secret roborock_vacuum_s5_password
+    draw: ['all']
+    attributes:
+      - calibration_points
+      - room_numbers
+      - rooms
+      - charger
+      - cleaned_rooms
+      - country
+      - goto
+      - map_name
+      - no_go_areas
+      - no_mopping_areas
+      - vacuum_position
+      - vacuum_room
+      - vacuum_room_name
+    colors:
+      color_map_outside: [17, 17, 17]
+      color_grey_wall: [110, 110, 110]
+      color_map_wall_v2:  [110, 110, 110]
+      color_path:  [255, 255, 255]
+      color_charger: [198, 255, 198]
+      color_robo: [0, 255, 0]
+    room_colors:
+      1: [255, 206, 222]
+      16: [133, 193, 223]
+      17: [128, 163, 172]
+      18: [213, 229, 194]
+      19: [201, 172, 132]
+      20: [219, 219, 219]
+      21: [218, 199, 174]
+      22: [243, 164, 99]
+    map_transformation:
+      scale: 3
+      rotate: 90
+      trim:
+        top: 23
+        bottom: 22
+        left: 27
+        right: 27
+    sizes:
+      charger_radius: 7
+      vacuum_radius: 9

@@ -1,0 +1,29 @@
+# Czas uruchomienia Home Assistant
+- platform: uptime
+  name: "Home Assistant Start Time"
+
+# Data, czas oraz data+czas
+- platform: time_date
+  display_options:
+    - "time"
+    - "date"
+    - "date_time"
+    - "date_time_iso"
+
+# Czujnik baterii tabletu WallPanel
+- platform: mqtt
+  state_topic: "wallpanel/mywallpanel/sensor/battery"
+  name: "WallPanel Poziom baterii"
+  unit_of_measurement: "%"
+  value_template: "{{ value_json.value }}"
+  device_class: battery
+
+# Powiadomienia o stanie dysku backup zNAS
+- platform: imap_email_content
+  server: imap.gmail.com
+  port: 993
+  name: "BackupHDD Status"
+  username: !secret home_assistant_dom_login
+  password: !secret home_assistant_dom_password
+  senders:
+    - !secret qnap_mail

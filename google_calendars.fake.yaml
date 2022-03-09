@@ -1,0 +1,20 @@
+- cal_id: xxxxxxxxxxxxxxxx@xxxxxxxxxxxxxxxx.com
+  entities:
+  - device_id: swieta_w_polsce
+    ignore_availability: true
+    name: "Święta w Polsce"
+    track: true
+
+- cal_id: xxxxxxxxxxxxxxxx@xxxxxxxxxxxxxxxx.com
+  entities:
+  - device_id: urodziny_wspolny
+    ignore_availability: true
+    name: "Urodziny"
+    track: true
+
+- cal_id: xxxxxxxxxxxxxxxx@xxxxxxxxxxxxxxxx.com
+  entities:
+  - device_id: dom
+    ignore_availability: true
+    name: Dom
+    track: true

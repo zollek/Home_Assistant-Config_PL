@@ -1,0 +1,35 @@
+{
+  "cwcLocWindDirections": {
+    "N": "Pn",
+    "NNE": "Pn Pn Wsch",
+    "NE": "Pn Wsch",
+    "ENE": "Wsch Pn Wsch",
+    "E": "Wsch",
+    "ESE": "Wsch Pd Wsch",
+    "SE": "Pd Wsch",
+    "SSE": "Pd Pd Wsch",
+    "S": "Pd",
+    "SSW": "Pd Pd Zach",
+    "SW": "Pd Zach",
+    "WSW": "Zach Pd Zach",
+    "W": "Zach",
+    "WNW": "Zach Pn Zach",
+    "NW": "Pn Zach",
+    "NNW": "Pn Pn Zach"
+  },
+
+  "cwcTerms": {
+    "Feels Like" : "Odczuwalna",
+    "new_moon": "Nów",
+    "new": "Nów",
+    "waxing_crescent": "Przybywający sierp",
+    "first_quarter": "Pierwsza kwadra",
+    "waxing_gibbous": "Przybywający garb",
+    "full": "Pełnia",
+    "full_moon": "Pełnia",
+    "waning_gibbous": "Ubywający garb",
+    "third_quarter": "Ostatnia kwadra",
+    "last_quarter": "Ostatnia kwadra",
+    "waning_crescent": "Ubywający sierp"
+  }
+}

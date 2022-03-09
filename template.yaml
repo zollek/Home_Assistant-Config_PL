@@ -1,0 +1,233 @@
+# Czas działania Home Assistant w minutach
+- sensor:
+    - name: "Home Assistant Online Time"
+      state: "{{ (as_timestamp(now()) - as_timestamp(states('sensor.home_assistant_start_time'))) // 60 }}"
+      unit_of_measurement: "minute"
+
+# Aktualny miesiąc
+- sensor:
+    - name: "Data - aktualny miesiąc"
+      state: "{{ as_timestamp(states('sensor.date_time_iso')) | timestamp_custom('%-m') }}"
+      unit_of_measurement: "month number"
+
+#Czujniki pogody dla AccuWeather:
+  # Aktualne warunki
+- sensor:
+    - name: "Accuweather Condition Live"
+      state:  "{{ states('weather.accuweather') }}"
+  # Aktualna temperatura
+- sensor:
+    - name: "Accuweather Temperature Live"
+      state:  "{{ state_attr('weather.accuweather', 'temperature') }}"
+  # Aktualna wilgotność
+- sensor:
+    - name: "Accuweather Humidity Live"
+      state:  "{{ state_attr('weather.accuweather', 'humidity') }}"
+  # Aktualna ciśnienie
+- sensor:
+    - name: "Accuweather Pressure Live"
+      state:  "{{ state_attr('weather.accuweather', 'pressure') }}"
+  # Aktualny kierunek wiatru
+- sensor:
+    - name: "Accuweather Wind Bearing Live"
+      state:  "{{ state_attr('weather.accuweather', 'wind_bearing') | round(0) }}"
+  # Aktualna prędkość wiatru
+- sensor:
+    - name: "Accuweather Wind Speed Live"
+      state:  "{{ state_attr('weather.accuweather', 'wind_speed') }}"
+  # Aktualna zasięg widoczności
+- sensor:
+    - name: "Accuweather Visibility"
+      state:  "{{ state_attr('weather.accuweather', 'visibility') }}"
+  # Wyliczanie temperatury odczuwalnej
+- sensor:
+    - name: "Accuweather Feels Like"
+      state: >
+        {% set T = (( states('sensor.accuweather_temperature_live') |float(0))*1.8)+32 %}
+        {% set RH = states('sensor.accuweather_humidity_live')|float(0) %}
+        {% set STEADMAN_HI = 0.5 * (T + 61.0 + ((T-68.0)*1.2) + (RH*0.094)) %}
+        {% if STEADMAN_HI >= 80 %}
+          {% set ROTHFUSZ_HI = -42.379 + 2.04901523*T + 10.14333127*RH - 0.22475541*T*RH - 0.00683783*T*T - 0.05481717*RH*RH + 0.00122874*T*T*RH + 0.00085282*T*RH*RH - 0.00000199*T*T*RH*RH %}
+          {% set HI = ROTHFUSZ_HI %}
+          {% if RH < 13 and 80 < T < 112 %}
+            {% set ADJUSTMENT = ((13-RH)/4)*((17-(T-95)|abs)/17)**0.5 %}
+            {% set HI = HI - ADJUSTMENT %}
+          {% elif RH > 85 and 80 < T < 87 %}
+            {% set ADJUSTMENT = ((RH-85)/10) * ((87-T)/5) %}
+            {% set HI = HI + ADJUSTMENT %}
+          {% endif %}
+        {% else %}
+        {% set HI = STEADMAN_HI %}
+        {% endif %}
+        {% set HI_C = (HI-32)/1.8 %}
+        {{- HI_C|round(1) -}}
+  # Dzisiaj
+- sensor:
+    - name: "Accuweather Condition D0"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[0].condition }}"
+- sensor:
+    - name: "Accuweather Temperature D0"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[0].temperature }}"
+- sensor:
+    - name: "Accuweather Temperature Low D0"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[0].templow }}"
+- sensor:
+    - name: "Accuweather Precipitation D0"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[0].precipitation }}"
+- sensor:
+    - name: "Accuweather Precipitation Probability D0"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[0].precipitation_probability }}"
+- sensor:
+    - name: "Accuweather Wind Bearing D0"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[0].wind_bearing }}"
+- sensor:
+    - name: "Accuweather Wind Speed D0"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[0].wind_speed }}"
+  # Dzień +1
+- sensor:
+    - name: "Accuweather Condition D1"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[1].condition }}"
+- sensor:
+    - name: "Accuweather Temperature D1"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[1].temperature }}"
+- sensor:
+    - name: "Accuweather Temperature Low D1"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[1].templow }}"
+- sensor:
+    - name: "Accuweather Precipitation D1"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[1].precipitation }}"
+- sensor:
+    - name: "Accuweather Precipitation Probability D1"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[1].precipitation_probability }}"
+- sensor:
+    - name: "Accuweather Wind Bearing D1"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[1].wind_bearing }}"
+- sensor:
+    - name: "Accuweather Wind Speed D1"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[1].wind_speed }}"
+  # Dzień +2
+- sensor:
+    - name: "Accuweather Condition D2"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[2].condition }}"
+- sensor:
+    - name: "Accuweather Temperature D2"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[2].temperature }}"
+- sensor:
+    - name: "Accuweather Temperature Low D2"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[2].templow }}"
+- sensor:
+    - name: "Accuweather Precipitation D2"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[2].precipitation }}"
+- sensor:
+    - name: "Accuweather Precipitation Probability D2"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[2].precipitation_probability }}"
+- sensor:
+    - name: "Accuweather Wind Bearing D2"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[2].wind_bearing }}"
+- sensor:
+    - name: "Accuweather Wind Speed D2"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[2].wind_speed }}"
+  # Dzień +3
+- sensor:
+    - name: "Accuweather Condition D3"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[3].condition }}"
+- sensor:
+    - name: "Accuweather Temperature D3"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[3].temperature }}"
+- sensor:
+    - name: "Accuweather Temperature Low D3"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[3].templow }}"
+- sensor:
+    - name: "Accuweather Precipitation D3"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[3].precipitation }}"
+- sensor:
+    - name: "Accuweather Precipitation Probability D3"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[3].precipitation_probability }}"
+- sensor:
+    - name: "Accuweather Wind Bearing D3"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[3].wind_bearing }}"
+- sensor:
+    - name: "Accuweather Wind Speed D3"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[3].wind_speed }}"
+  # Dzień +4
+- sensor:
+    - name: "Accuweather Condition D4"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[4].condition }}"
+- sensor:
+    - name: "Accuweather Temperature D4"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[4].temperature }}"
+- sensor:
+    - name: "Accuweather Temperature Low D4"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[4].templow }}"
+- sensor:
+    - name: "Accuweather Precipitation D4"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[4].precipitation }}"
+- sensor:
+    - name: "Accuweather Precipitation Probability D4"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[4].precipitation_probability }}"
+- sensor:
+    - name: "Accuweather Wind Bearing D4"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[4].wind_bearing }}"
+- sensor:
+    - name: "Accuweather Wind Speed D4"
+      state:  "{{ state_attr('weather.accuweather', 'forecast')[4].wind_speed }}"
+
+# Wyliczanie temperatury odczuwalnej dla zewnętrznego czujnika Xiaomi
+- sensor:
+    - name: "Czujnik Xiaomi Zewnetrzny Feels Like"
+      state: >
+        {% set T = (( states('sensor.czujnik_xiaomi_zewnetrzny_temperature') |float(0))*1.8)+32 %}
+        {% set RH = states('sensor.czujnik_xiaomi_zewnetrzny_humidity')|float(0) %}
+        {% set STEADMAN_HI = 0.5 * (T + 61.0 + ((T-68.0)*1.2) + (RH*0.094)) %}
+        {% if STEADMAN_HI >= 80 %}
+          {% set ROTHFUSZ_HI = -42.379 + 2.04901523*T + 10.14333127*RH - 0.22475541*T*RH - 0.00683783*T*T - 0.05481717*RH*RH + 0.00122874*T*T*RH + 0.00085282*T*RH*RH - 0.00000199*T*T*RH*RH %}
+          {% set HI = ROTHFUSZ_HI %}
+          {% if RH < 13 and 80 < T < 112 %}
+            {% set ADJUSTMENT = ((13-RH)/4)*((17-(T-95)|abs)/17)**0.5 %}
+            {% set HI = HI - ADJUSTMENT %}
+          {% elif RH > 85 and 80 < T < 87 %}
+            {% set ADJUSTMENT = ((RH-85)/10) * ((87-T)/5) %}
+            {% set HI = HI + ADJUSTMENT %}
+          {% endif %}
+        {% else %}
+        {% set HI = STEADMAN_HI %}
+        {% endif %}
+        {% set HI_C = (HI-32)/1.8 %}
+        {{- HI_C|round(1) -}}
+
+# Czas od ostatniego uruchomienia automatyki w minutach
+  # Ogrzewanie Otwarcie Drzwi balkonowe Salon
+- sensor:
+    - name: "Automation Last HEATING WINDOW Salon balkon door open thermostat OFF Time"
+      state: "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.automation_last_heating_window_salon_balkon_door_open_thermostat_off_time'))) // 60 }}"
+      unit_of_measurement: "minute"
+  # Ogrzewanie Otwarcie Okno Salon
+- sensor:
+    - name: "Automation Last HEATING WINDOW Salon okno window open thermostat OFF Time"
+      state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.automation_last_heating_window_salon_okno_window_open_thermostat_off_time'))) // 60 }}"
+      unit_of_measurement: "minute"
+  # Ogrzewanie Otwarcie Okno Kuchnia
+- sensor:
+    - name: "Automation Last HEATING WINDOW Kuchnia window open thermostat OFF Time"
+      state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.automation_last_heating_window_kuchnia_window_open_thermostat_off_time'))) // 60 }}"
+      unit_of_measurement: "minute"
+  # Ogrzewanie Otwarcie Okno Sypialnia
+- sensor:
+    - name: "Automation Last HEATING WINDOW Sypialnia główna window open thermostat OFF Time"
+      state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.automation_last_heating_window_sypialnia_glowna_window_open_thermostat_off_time'))) // 60 }}"
+      unit_of_measurement: "minute"
+  # Ogrzewanie Otwarcie Okno Pokój Marta
+- sensor:
+    - name: "Automation Last HEATING WINDOW Sypialnia Marta window open thermostat OFF Time"
+      state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.automation_last_heating_window_sypialnia_marta_window_open_thermostat_off_time'))) // 60 }}"
+      unit_of_measurement: "minute"
+  # Ogrzewanie Otwarcie Okno Pokój Paweł
+- sensor:
+    - name: "Automation Last HEATING WINDOW Sypialnia Paweł window open thermostat OFF Time"
+      state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.automation_last_heating_window_sypialnia_pawel_window_open_thermostat_off_time'))) // 60 }}"
+      unit_of_measurement: "minute"
+  # Ogrzewanie wyjazd
+- sensor:
+    - name: "Automation Last HEATING AWAY Lower heating temperature when away night based on Alarm mode Time"
+      state:  "{{ (as_timestamp(now()) - as_timestamp(state_attr('automation.heating_away_restore_heating_temperature_when_away_night_disarmed_based_on_alarm_mode', 'last_triggered'))) // 60 }}"
+      unit_of_measurement: "minute"

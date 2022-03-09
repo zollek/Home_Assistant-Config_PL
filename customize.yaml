@@ -1,0 +1,25 @@
+climate.termostat_salon_2:
+  friendly_name: Termostat Salon Święta
+binary_sensor.czujnik_otwarcia_drzwi_wejsciowe_sensor:
+  device_class: door
+  friendly_name: Drzwi wejściowe
+binary_sensor.czujnik_otwarcia_drzwi_balkonowe_sensor:
+  device_class: door
+  friendly_name: Drzwi balkonowe
+binary_sensor.czujnik_otwarcia_drzwi_pomieszczenie_gospodarcze_sensor:
+  device_class: door
+  friendly_name: Drzwi pomieszczenie gospodarcze
+binary_sensor.czujnik_otwarcia_okno_sypialnia_3_contact:
+  device_class: window
+binary_sensor.czujnik_otwarcia_okno_salon_n1_contact:
+  device_class: window
+binary_sensor.czujnik_otwarcia_okno_salon_n2_contact:
+  device_class: window
+binary_sensor.czujnik_otwarcia_okno_sypialnia_2_contact:
+  device_class: window
+binary_sensor.czujnik_otwarcia_okno_sypialnia_contact:
+  device_class: window
+sensor.czujnik_xiaomi_salon_temperature:
+  state_class: measurement
+sensor.czujnik_xiaomi_salon_humidity:
+  state_class: measurement

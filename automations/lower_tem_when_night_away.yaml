@@ -1,0 +1,132 @@
+# id adding template: RRRRmmDDhhMMss 20220126204731
+
+# Zmiana temperatury termostatów po załącznieu alarmu
+- id: "20211222100437"
+  alias: "HEATING AWAY Lower heating temperature when away based on Alarm mode"
+  trigger:
+    - platform: state
+      entity_id: 
+        - alarm_control_panel.dom_2
+      to: 'armed_vacation'
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+   # Zapis do pomocnik temperatura Alarm i Okno, działania matematyczne na pomocnikach
+    # Zapis aktualnej temperatury termostatów do pomocników
+    - choose:
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time
+            above: 6
+        sequence:
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_balkon_alarm
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_okno_alarm
+            data_template:
+               value: "{{ state_attr('climate.termostat_salon_okno', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_kuchnia_alarm
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_sypialnia_alarm
+            data_template:
+              value: "{{ state_attr('climate.termostat_sypialnia', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_sypialnia_2_alarm
+            data_template:
+              value: "{{ state_attr('climate.termostat_sypialnia_marta', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_sypialnia_3_alarm
+            data_template:
+              value: "{{ state_attr('climate.termostat_sypialnia_pawel', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_lazienka_marta_alarm
+            data_template:
+              value: "{{ state_attr('climate.termostat_lazienka_marta_kaloryfer', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_lazienka_pawel_alarm
+            data_template:
+              value: "{{ state_attr('climate.termostat_lazienka_pawel_kaloryfer', 'temperature') | float(0) }}"
+    # Włącz automatyzację podnoszenie temperatury przez alarm          
+    - choose:
+        conditions:
+          - condition: state
+            entity_id: automation.heating_away_restore_heating_temperature_when_away_night_disarmed_based_on_alarm_mode
+            state: "off"
+        sequence:
+          - service: automation.turn_on
+            target:
+              entity_id: automation.heating_away_restore_heating_temperature_when_away_night_disarmed_based_on_alarm_mode
+    # Działania matematyczne na pomocnikach
+    - service: script.heating_helpers_lower_temperature
+    # Opóźnienie
+    - delay:
+        seconds: 5
+    # Ustawienie temperatury na termostatach
+    - service: script.heating_set_thermostats
+
+# Zmiana temperatury termostatów po wyłączeniu alarmu
+- id: "20211222100448"
+  alias: "HEATING AWAY Restore heating temperature when away disarmed based on Alarm mode"
+  trigger:
+    - platform: state
+      entity_id: 
+        - alarm_control_panel.dom_2
+      from: 'armed_vacation'
+  action:
+   # Wyłącz automatyzację podnoszenie temperatury jeżeli jest włączona
+    - choose:
+        conditions:
+          - condition: state
+            entity_id: automation.heating_away_restore_heating_temperature_at_time
+            state: "on"
+        sequence:
+          - service: automation.turn_off
+            target:
+              entity_id: automation.heating_away_restore_heating_temperature_at_time
+   # Działania matematyczne na pomocnikach temperatura Alarm i Okno
+    - service: script.heating_helpers_rise_temperature
+   # Opóźnienie
+    - delay:
+        seconds: 5
+   # Ustawienie temperatury na termostatach
+    - service: script.heating_set_thermostats
+
+# Załącznie ogrzewania o określonej godzinie
+- id: "20220126204732"
+  alias: "HEATING AWAY Restore heating temperature at time"
+  trigger:
+    - platform: time
+      at:
+        - input_datetime.automation_heating_time_restore
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.dom_2
+        state: "armed_vacation"
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+  action:
+   # Wyłącz automatyzację podnoszenie temperatury przez alarm
+    - service: automation.turn_off
+      target:
+        entity_id: automation.heating_away_restore_heating_temperature_when_away_night_disarmed_based_on_alarm_mode
+   # Działania matematyczne na pomocnikach temperatura Alarm i Okno
+    - service: script.heating_helpers_rise_temperature
+   # Opóźnienie
+    - delay:
+        seconds: 5
+   # Ustawienie temperatury na termostatach
+    - service: script.heating_set_thermostats
+   # Wyłącz automatyzację podnoszenie temperatury przez godzinę
+    - service: automation.turn_off
+      target:
+        entity_id: automation.heating_away_restore_heating_temperature_at_time

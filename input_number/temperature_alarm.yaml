@@ -1,0 +1,71 @@
+termostat_salon_balkon_alarm:
+  name: ALARM Termostat Salon-Balkon
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline
+
+termostat_salon_okno_alarm:
+  name: ALARM Termostat Salon-Okno
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline
+
+termostat_salon_kuchnia_alarm:
+  name: ALARM Termostat Salon-Kuchnia
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline
+
+termostat_sypialnia_alarm:
+  name: ALARM Termostat Sypialnia
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline
+
+termostat_sypialnia_2_alarm:
+  name: ALARM Termostat Sypialnia Marta
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline
+
+termostat_sypialnia_3_alarm:
+  name: ALARM Termostat Sypialnia Paweł
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline
+
+termostat_lazienka_marta_alarm:
+  name: ALARM Termostat Łazienka Marta
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline
+
+termostat_lazienka_pawel_alarm:
+  name: ALARM Termostat Łazienka Paweł
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline

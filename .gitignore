@@ -1,0 +1,30 @@
+# Whitelist files/folders (starting with ! will not be ignored)
+!*.yaml
+!.gitignore
+!*.md
+
+# Ignore folders.
+.storage
+.cloud
+.google.token
+*.log
+*.log.*
+*.db
+*.db-shm
+*.db-wal
+*.pyc
+._*
+__pycache__
+deps
+image
+tts
+www/*/alarmo*
+
+# !!!! Ignored secrets/important
+secrets.yaml
+known_devices.yaml
+google_calendars.yaml
+
+
+# Temporary ignores
+.old_config

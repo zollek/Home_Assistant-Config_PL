@@ -1,0 +1,2 @@
+# Zamiana tokena google na prawidłowy 'cp -f [plik do skopiowania] [plik do nadpisania]'
+# replace_google_token: 'cp -f /config/google.token_ok/.google.token /config/.google.token'

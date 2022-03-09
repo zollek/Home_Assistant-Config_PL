@@ -1,0 +1,85 @@
+# id adding template: RRRRmmDDhhMMss
+
+# Zarządzeniem ładowania tabletu
+- id: "20211222100313"
+  alias: "Zarządzanie ładowaniem tabletu WallPanel"
+  description: Ładowanie tabletu na podstawie stanu baterii
+  use_blueprint:
+    path: homeassistant/battery_charging_on-off.yaml
+    input:
+      discharged_percent: '30'
+      switch: switch.gniazdko_tablet_wallpanel
+      phone_battery: sensor.wallpanel_poziom_baterii
+
+# Wyłącz amplituner przy wyjściu z mieszkania
+- id: "20211222100329"
+  alias: "AWAY Wyłącz amplituner"
+  trigger:
+    - platform: state
+      entity_id: 
+        - alarm_control_panel.dom_2
+      to:
+        - "armed_away"
+        - "armed_vacation"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - service: script.onkyo_off
+
+# Wyłącz choinkę przy wyjściu z mieszkania
+- id: "20211222100341"
+  alias: "CHRISTMAS Wyłącz choinkę"
+  trigger:
+    - platform: state
+      entity_id: 
+        - alarm_control_panel.dom_2
+      to:
+        - "armed_away"
+        - "armed_vacation"
+        - "armed_night"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - service: switch.turn_off
+      target:
+        entity_id: switch.gniazdko_keemple
+
+# Włącz choinkę po przyjściu do mieszkania
+- id: "20211222100401"
+  alias: "CHRISTMAS Włącz choinkę"
+  trigger:
+    - platform: state
+      entity_id: 
+        - alarm_control_panel.dom_2
+      to: "disarmed"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - service: switch.turn_on
+      target:
+        entity_id: switch.gniazdko_keemple
+
+# Dezaktywuje aktualizacją mapy odkurzacza gdy jest w bazie
+- id: "20211222100418"
+  alias: "ROBOROCK Camera off when docked"
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: vacuum.czesio
+  condition:
+    condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+    - service_template: >
+        {% if trigger.to_state.state in ['unavailable', 'unknown', 'docked'] %}
+          camera.turn_off
+        {% else %}
+          camera.turn_on
+        {% endif %}
+      entity_id: camera.xiaomi_cloud_map_extractor

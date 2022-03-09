@@ -1,0 +1,29 @@
+# Zmiana Switchy na Light tak żeby można je grupować
+#- platform: switch
+#  name: Light Switch Sypialnia 2 Lewy
+#  entity_id: switch.light_switch_sypialnia_2_lewy
+
+#- platform: switch
+#  name: Light Switch Sypialnia 2 Prawy
+#  entity_id: switch.light_switch_sypialnia_2_prawy
+
+#- platform: switch
+#  name: Light Switch Sypialnia 3 Lewy
+#  entity_id: switch.light_switch_sypialnia_3_lewy
+
+#- platform: switch
+#  name: Light Switch Sypialnia 3 Prawy
+#  entity_id: switch.light_switch_sypialnia_3_prawy
+
+# Grupowanie światła (zmienionych wcześniej switchy), dodatkowo zastosowano synchronizacja switchy w automations/switch_synchronization.yaml
+#- platform: group
+#  name: Main Light Sypialnia 2
+#  entities:
+#  - light.light_switch_sypialnia_2_lewy
+#  - light.light_switch_sypialnia_2_prawy
+
+#- platform: group
+#  name: Main Light Sypialnia 3
+#  entities:
+#  - light.light_switch_sypialnia_3_lewy
+#  - light.light_switch_sypialnia_3_prawy

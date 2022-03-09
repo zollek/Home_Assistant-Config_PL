@@ -1,0 +1,169 @@
+# Działania matematyczne na pomocnikach
+ # Zwiększenie temperatury
+heating_helpers_rise_temperature:
+  alias: Zwiększenie temperatury pomocników termostatów
+  mode: single
+  sequence:
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_balkon_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_salon_balkon_alarm') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_balkon_window
+      data_template:
+        value: "{{ states('input_number.termostat_salon_balkon_window') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_okno_alarm
+      data_template:
+         value: "{{ states('input_number.termostat_salon_okno_alarm') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_okno_window
+      data_template:
+        value: "{{ states('input_number.termostat_salon_okno_window') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_kuchnia_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_salon_kuchnia_alarm') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_kuchnia_window
+      data_template:
+        value: "{{ states('input_number.termostat_salon_kuchnia_window') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_alarm') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_window
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_window') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_2_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_2_alarm') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_2_window
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_2_window') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_3_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_3_alarm') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_3_window
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_3_window') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_lazienka_marta_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_lazienka_marta_alarm') | float(0) +1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_lazienka_pawel_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_lazienka_pawel_alarm') | float(0) +1 }}"  
+ # Zmniejszenie temperatury
+heating_helpers_lower_temperature:
+  alias: Zmniejszenie temperatury pomocników termostatów
+  mode: single
+  sequence:
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_balkon_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_salon_balkon_alarm') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_balkon_window
+      data_template:
+        value: "{{ states('input_number.termostat_salon_balkon_window') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_okno_alarm
+      data_template:
+         value: "{{ states('input_number.termostat_salon_okno_alarm') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_okno_window
+      data_template:
+        value: "{{ states('input_number.termostat_salon_okno_window') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_kuchnia_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_salon_kuchnia_alarm') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_salon_kuchnia_window
+      data_template:
+        value: "{{ states('input_number.termostat_salon_kuchnia_window') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_alarm') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_window
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_window') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_2_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_2_alarm') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_2_window
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_2_window') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_3_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_3_alarm') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_sypialnia_3_window
+      data_template:
+        value: "{{ states('input_number.termostat_sypialnia_3_window') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_lazienka_marta_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_lazienka_marta_alarm') | float(0) -1 }}"
+    - service: input_number.set_value
+      entity_id: input_number.termostat_lazienka_pawel_alarm
+      data_template:
+        value: "{{ states('input_number.termostat_lazienka_pawel_alarm') | float(0) -1 }}"
+
+# Ustawienie temperatury na termostatach
+heating_set_thermostats:
+  alias: Ustaw temperaturę pomocnika na termostacie
+  mode: single
+  sequence:
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_balkon
+      data_template:
+        temperature: "{{ states('input_number.termostat_salon_balkon_alarm') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_okno
+      data_template:
+        temperature: "{{ states('input_number.termostat_salon_okno_alarm') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_kuchnia
+      data_template:
+        temperature: "{{ states('input_number.termostat_salon_kuchnia_alarm') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia
+      data_template:
+        temperature: "{{ states('input_number.termostat_sypialnia_alarm') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia_marta
+      data_template:
+        temperature: "{{ states('input_number.termostat_sypialnia_2_alarm') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia_pawel
+      data_template:
+        temperature: "{{ states('input_number.termostat_sypialnia_3_alarm') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_lazienka_marta_kaloryfer
+      data_template:
+        temperature: "{{ states('input_number.termostat_lazienka_marta_alarm') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_lazienka_pawel_kaloryfer
+      data_template:
+        temperature: "{{ states('input_number.termostat_lazienka_pawel_alarm') | float(0) }}"

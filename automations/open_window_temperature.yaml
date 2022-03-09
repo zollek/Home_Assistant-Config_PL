@@ -1,0 +1,371 @@
+# id adding template: RRRRmmDDhhMMss
+# Otwarcie okien - zapis temperatury w momencie otwarcia okna oraz obniżenie temperatury termostatu
+
+# Salon
+# Czujnik Salon Balkon
+- id: "20211222100600"
+  alias: HEATING WINDOW Salon balkon door open thermostat OFF
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_drzwi_balkonowe_sensor
+      to: "on"
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+      - condition: state
+        entity_id:
+          - binary_sensor.czujnik_otwarcia_okno_salon_n1_contact
+          - binary_sensor.czujnik_otwarcia_okno_salon_n2_contact
+        state: "off"
+  action:
+    - choose:
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.automation_last_heating_window_salon_balkon_door_open_thermostat_off_time
+            above: 6
+        sequence:
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_kuchnia_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_okno_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_okno', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_balkon_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_kuchnia
+      data:
+        temperature: 4.0
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_okno
+      data:
+        temperature: 4.0
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_balkon
+      data:
+        temperature: 4.0
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.automation_last_heating_window_salon_balkon_door_open_thermostat_off_time
+      data:
+        timestamp: "{{ now().timestamp() }}"
+
+# Czujnik Salon Okno
+- id: "20211222100622"
+  alias: "HEATING WINDOW Salon okno window open thermostat OFF"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_okno_salon_n2_contact
+      to: "on"
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+      - condition: state
+        entity_id:
+          - binary_sensor.czujnik_otwarcia_okno_salon_n1_contact
+          - binary_sensor.czujnik_otwarcia_drzwi_balkonowe_sensor
+        state: "off"
+  action:
+    - choose:
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.automation_last_heating_window_salon_okno_window_open_thermostat_off_time
+            above: 6
+        sequence:
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_kuchnia_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_okno_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_okno', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_balkon_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_kuchnia
+      data:
+        temperature: 4.0
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_okno
+      data:
+        temperature: 4.0
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_balkon
+      data:
+        temperature: 4.0
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.automation_last_heating_window_salon_okno_window_open_thermostat_off_time
+      data:
+        timestamp: "{{ now().timestamp() }}"
+
+# Czujnik Kuchnia
+- id: "20211222100633"
+  alias: "HEATING WINDOW Kuchnia window open thermostat OFF"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_okno_salon_n1_contact
+      to: "on"
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+      - condition: state
+        entity_id:
+          - binary_sensor.czujnik_otwarcia_okno_salon_n2_contact
+          - binary_sensor.czujnik_otwarcia_drzwi_balkonowe_sensor
+        state: "off"
+  action:
+    - choose:
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.automation_last_heating_window_kuchnia_window_open_thermostat_off_time
+            above: 6
+        sequence:
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_kuchnia_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_okno_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_okno', 'temperature') | float(0) }}"
+          - service: input_number.set_value
+            entity_id: input_number.termostat_salon_balkon_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_kuchnia
+      data:
+        temperature: 4.0
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_okno
+      data:
+        temperature: 4.0
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_balkon
+      data:
+        temperature: 4.0
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.automation_last_heating_window_kuchnia_window_open_thermostat_off_time
+      data:
+        timestamp: "{{ now().timestamp() }}"
+
+# Czujnik Sypialnia główna
+- id: "20211222100645"
+  alias: "HEATING WINDOW Sypialnia główna window open thermostat OFF"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_contact
+      to: "on"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - choose:
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.automation_last_heating_window_sypialnia_glowna_window_open_thermostat_off_time
+            above: 6
+        sequence:
+          - service: input_number.set_value
+            entity_id: input_number.termostat_sypialnia_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_sypialnia', 'temperature') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia
+      data:
+        temperature: 4.0
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.automation_last_heating_window_sypialnia_glowna_window_open_thermostat_off_time
+      data:
+        timestamp: "{{ now().timestamp() }}"
+
+# Czujnik Sypialnia Marta
+- id: "20211222100657"
+  alias: "HEATING WINDOW Sypialnia Marta window open thermostat OFF"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_2_contact
+      to: "on"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - choose:
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.automation_last_heating_window_sypialnia_marta_window_open_thermostat_off_time
+            above: 6
+        sequence:
+          - service: input_number.set_value
+            entity_id: input_number.termostat_sypialnia_2_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_sypialnia_marta', 'temperature') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia_marta
+      data:
+        temperature: 4.0
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.automation_last_heating_window_sypialnia_marta_window_open_thermostat_off_time
+      data:
+        timestamp: "{{ now().timestamp() }}"
+
+# Czujnik Sypialnia Paweł
+- id: "20211222100708"
+  alias: "HEATING WINDOW Sypialnia Paweł window open thermostat OFF"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_3_contact
+      to: "on"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - choose:
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.automation_last_heating_window_sypialnia_pawel_window_open_thermostat_off_time
+            above: 6
+        sequence:
+          - service: input_number.set_value
+            entity_id: input_number.termostat_sypialnia_3_window
+            data_template:
+              value: "{{ state_attr('climate.termostat_sypialnia_pawel', 'temperature') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia_pawel
+      data:
+        temperature: 4.0
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.automation_last_heating_window_sypialnia_pawel_window_open_thermostat_off_time
+      data:
+        timestamp: "{{ now().timestamp() }}"
+
+# Zamknięcie okien - zwiększenie temperatury termostatu
+
+# Czujniki Salon
+- id: "20211222100725"
+  alias: "HEATING WINDOW Salon door close thermostat restore"
+  trigger:
+    - platform: state
+      entity_id: 
+        - binary_sensor.czujnik_otwarcia_drzwi_balkonowe_sensor
+        - binary_sensor.czujnik_otwarcia_okno_salon_n1_contact
+        - binary_sensor.czujnik_otwarcia_okno_salon_n2_contact
+      to: "off"
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+      - condition: state
+        entity_id:
+          - binary_sensor.czujnik_otwarcia_drzwi_balkonowe_sensor
+          - binary_sensor.czujnik_otwarcia_okno_salon_n1_contact
+          - binary_sensor.czujnik_otwarcia_okno_salon_n2_contact
+        state: "off"
+  action:
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_kuchnia
+      data_template:
+        temperature: "{{ states('input_number.termostat_salon_kuchnia_window') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_okno
+      data_template:
+        temperature: "{{ states('input_number.termostat_salon_okno_window') | float(0) }}"
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_salon_balkon
+      data_template:
+        temperature: "{{ states('input_number.termostat_salon_balkon_window') | float(0) }}"
+
+# Czujnik Sypialnia główna
+- id: "20211222100736"
+  alias: "HEATING WINDOW Sypialnia główna window close thermostat restore"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_contact
+      to: "off"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia
+      data_template:
+        temperature: "{{ states('input_number.termostat_sypialnia_window') | float(0) }}"
+
+# Czujnik Sypialnia Marta
+- id: "20211222100747"
+  alias: "HEATING WINDOW Sypialnia Marta window close thermostat restore"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_2_contact
+      to: "off"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia_marta
+      data_template:
+        temperature: "{{ states('input_number.termostat_sypialnia_2_window') | float(0) }}"
+
+# Czujnik Sypialnia Paweł
+- id: "20211222100757"
+  alias: "HEATING WINDOW Sypialnia Paweł window close thermostat restore"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_3_contact
+      to: "off"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.termostat_sypialnia_pawel
+      data_template:
+        temperature: "{{ states('input_number.termostat_sypialnia_3_window') | float(0) }}"

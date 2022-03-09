@@ -1,0 +1,35 @@
+{
+  "cwcLocWindDirections": {
+    "N": "Pn",
+    "NNE": "Pn Pn Wsch",
+    "NE": "Pn Wsch",
+    "ENE": "Wsch Pn Wsch",
+    "E": "Wsch",
+    "ESE": "Wsch Pd Wsch",
+    "SE": "Pd Wsch",
+    "SSE": "Pd Pd Wsch",
+    "S": "Pd",
+    "SSW": "Pd Pd Zach",
+    "SW": "Pd Zach",
+    "WSW": "Zach Pd Zach",
+    "W": "Zach",
+    "WNW": "Zach Pn Zach",
+    "NW": "Pn Zach",
+    "NNW": "Pn Pn Zach"
+  },
+
+  "cwcTerms": {
+    "Feels Like" : "Odczuwalna",
+    "new_moon": "Lua Nova",
+    "new": "Lua nova",
+    "waxing_crescent": "Lua Crescente",
+    "first_quarter": "Quarto Crescente",
+    "waxing_gibbous": "Crescente Gibosa",
+    "full": "Lua Cheia",
+    "full_moon": "Lua Cheia",
+    "waning_gibbous": "Minguante Gibosa",
+    "third_quarter": "Quarto Minguante",
+    "last_quarter": "Quarto Minguante",
+    "waning_crescent": "Lua Minguante"
+  }
+}

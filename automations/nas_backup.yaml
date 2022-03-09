@@ -1,0 +1,37 @@
+# id adding template: RRRRmmDDhhMMss
+
+# Wyłączenie zasilania dysku po zakończeniu backupu
+- id: '20220222163030'
+  alias: "Wyłącz zasilanie dysku USB BackupHDD"
+  trigger:
+  - entity_id: sensor.backuphdd_status
+    platform: state
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+      - condition: template
+        value_template: "{{ '[Storage & Snapshots] Ejected external device \"ASMT 2115\"' in state_attr('sensor.backuphdd_status', 'body') }}"
+  action:
+  - service: switch.turn_off
+    entity_id: switch.gniazdko_usb_hdd_backup_nas
+
+# Załączenie backupu raz w miesiącu
+- id: "20220222175030"
+  alias: "Uruchom kopię zapasową danych"
+  trigger:
+  - entity_id: sensor.current_month
+    platform: state
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+      - condition: template
+        value_template: "{{ now().month in [1, 4, 7, 10] }}"
+  action:
+  - service: switch.turn_on
+    entity_id: switch.gniazdko_usb_hdd_backup_nas

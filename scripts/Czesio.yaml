@@ -1,0 +1,46 @@
+# Czesio - Robot sprzątający
+  # Czyszczenie mieszkania na wilgotno (mopowanie wybranych pomieszczeń)
+roborock_mop:
+  alias: Czesio mopowanie 
+  mode: single
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.czesio
+      command: app_segment_clean
+      params:
+      - 1
+      - 16
+      - 18
+      - 19
+      - 20
+      - 21
+      - 22
+  - service: vacuum.set_fan_speed
+    data:
+      entity_id: vacuum.czesio
+      fan_speed: Gentle
+  # Czesio - odkurzanie całego mieszkania
+roborock_hoovering:
+  alias: Czesio odkurzanie
+  mode: single
+  sequence:
+  - service: vacuum.start
+    data:
+      entity_id: vacuum.czesio
+  - service: vacuum.set_fan_speed
+    data:
+      entity_id: vacuum.czesio
+      fan_speed: Turbo
+  # Czesio - Zatrzymanie aktualnie wykonywanych zadań i powrót do bazy
+roborock_home:
+  alias: Czesio powrót do bazy
+  mode: single
+  sequence:
+  - service: vacuum.stop
+    data:
+      entity_id: vacuum.czesio
+  - wait_template: "{{ is_state('vacuum.czesio', 'idle') }}"
+  - service: vacuum.return_to_base
+    data:
+      entity_id: vacuum.czesio

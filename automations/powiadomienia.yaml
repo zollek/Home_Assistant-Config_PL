@@ -1,0 +1,42 @@
+# id adding template: RRRRmmDDhhMMss
+
+# Powiadomienie o alarmie
+#- alias: 'Powiadomienie o alarmie'
+#  trigger:
+#    - platform: state
+#      entity_id: alarm_control_panel.dom_2
+#      to: "triggered"
+#  action:
+#    - service: notify.telegram_zollek
+#      data:
+#        message: "Alarm został uruchomiony!"
+#        data:
+#          photo:
+#            - file: /media/graphics/Thief.png
+#              caption: ''
+
+# Powiadomienie o niskim stanie baterii
+- id: "20211222100901"
+  alias: "Sprawdzanie i powiadomienie o nikim poziomie baterii"
+  description: ''
+  use_blueprint:
+    path: homeassistant/low-battery-level-detection-notification-for-all-battery-sensors.yaml
+    input:
+      day: 0
+      time: '18:00:00'
+      threshold: 45
+      exclude:
+        entity_id:
+        - sensor.p30_pro_poziom_baterii
+        - sensor.wallpanel_poziom_baterii
+      actions:
+      - service: notify.telegram_zollek
+        data:
+          message: ''
+          data:
+            photo:
+              - file: /config/www/graphics/low_battery.png
+                caption: ''
+      - service: notify.telegram_zollek
+        data:
+          message: 'Urządzenie o niskim stanie baterii: {{sensors|replace("_"," ")}}'

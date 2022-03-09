@@ -1,0 +1,33 @@
+#Synchronizacja Switchy, Jeżeli Switch1 jest ON, to Switch 2 zostaje ON, Jeżeli SWitch 2 jest OFF to Switch 1 zostaje OFF, itd.
+
+- alias: Sync Main Light Sypialnia 2-Keemple
+  description: 'Synchronizuje podwujne włączniki światła'
+  trigger:
+  - entity_id: switch.light_switch_sypialnia_2_n1_lewy_keemple, switch.light_switch_sypialnia_2_n1_prawy_keemple
+    platform: state
+  condition:
+    condition: template
+    value_template: "{{ 'on' in trigger.to_state.state or 'off' in trigger.to_state.state }}"
+    condition: template
+    value_template: "{{ trigger.from_state.state != trigger.to_state.state }}"
+  action:
+  - service_template: homeassistant.turn_{{trigger.to_state.state}}
+    data:
+      entity_id: switch.light_switch_sypialnia_2_n1_lewy_keemple, switch.light_switch_sypialnia_2_n1_prawy_keemple
+  mode: single
+
+- alias: Sync Main Light Sypialnia 3-Keemple
+  description: 'Synchronizuje podwujne włączniki światła'
+  trigger:
+  - entity_id: switch.light_switch_sypialnia_3_n1_lewy_keemple, switch.light_switch_sypialnia_3_n1_prawy_keemple
+    platform: state
+  condition:
+    condition: template
+    value_template: "{{ 'on' in trigger.to_state.state or 'off' in trigger.to_state.state }}"
+    condition: template
+    value_template: "{{ trigger.from_state.state != trigger.to_state.state }}"
+  action:
+  - service_template: homeassistant.turn_{{trigger.to_state.state}}
+    data:
+      entity_id: switch.light_switch_sypialnia_3_n1_lewy_keemple, switch.light_switch_sypialnia_3_n1_prawy_keemple
+  mode: single

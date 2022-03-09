@@ -1,0 +1,65 @@
+blueprint:
+  name: Włącz/Wyłącz ładowanie urządzenia
+  description: Włącza i wyłącza smart gniazdko w określonych zakresie
+    naładowania baterii.
+  domain: automation
+  input:
+    switch:
+      name: Smart gniazdko
+      description: Smart gniazdko Włącz/Wyłącz
+      selector:
+        entity:
+          domain: switch
+    phone_battery:
+      name: Bateria urządzenia 
+      description: Czujnik poziomu baterii
+      selector:
+        entity:
+          domain: sensor
+          device_class: battery
+    charged_percent:
+      name: Poziom naładowania
+      description: Poziom baterii powyżej którego wyłączy się ładowanie
+      selector:
+        number:
+          min: 0.0
+          max: 100.0
+          unit_of_measurement: '%'
+          mode: box
+          step: 1.0
+      default: 80
+    discharged_percent:
+      name: Poziom rozładowania
+      description: Poziom baterii poniżej którego załączy się ładowanie
+      selector:
+        number:
+          min: 0.0
+          max: 100.0
+          unit_of_measurement: '%'
+          mode: box
+          step: 1.0
+      default: 30
+variables:
+  phone_battery: !input 'phone_battery'
+  charged_percent: !input 'charged_percent'
+  discharged_percent: !input 'discharged_percent'
+trigger:
+- platform: state
+  entity_id: !input 'phone_battery'
+action:
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ (states(phone_battery)|int) >= (charged_percent|int) }}'
+    sequence:
+    - service: switch.turn_off
+      data: {}
+      entity_id: !input 'switch'
+  - conditions:
+    - condition: template
+      value_template: '{{ (states(phone_battery)|int) <= (discharged_percent|int) }}'
+    sequence:
+    - service: switch.turn_on
+      data: {}
+      entity_id: !input 'switch'
+  default: []

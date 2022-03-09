@@ -1,0 +1,29 @@
+automation_last_heating_window_salon_balkon_door_open_thermostat_off_time:
+  name: "Automation Last HEATING WINDOW Salon balkon door open thermostat OFF Time"
+  has_date: true
+  has_time: true
+
+automation_last_heating_window_salon_okno_window_open_thermostat_off_time:
+  name: "Automation Last HEATING WINDOW Salon okno window open thermostat OFF Time"
+  has_date: true
+  has_time: true
+
+automation_last_heating_window_kuchnia_window_open_thermostat_off_time:
+  name: "Automation Last HEATING WINDOW Kuchnia window open thermostat OFF Time"
+  has_date: true
+  has_time: true
+
+automation_last_heating_window_sypialnia_glowna_window_open_thermostat_off_time:
+  name: "Automation Last HEATING WINDOW Sypialnia główna window open thermostat OFF Time"
+  has_date: true
+  has_time: true
+
+automation_last_heating_window_sypialnia_marta_window_open_thermostat_off_time:
+  name: "Automation Last HEATING WINDOW Sypialnia Marta window open thermostat OFF Time"
+  has_date: true
+  has_time: true
+
+automation_last_heating_window_sypialnia_pawel_window_open_thermostat_off_time:
+  name: "Automation Last HEATING WINDOW Sypialnia Paweł window open thermostat OFF Time"
+  has_date: true
+  has_time: true

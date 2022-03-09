@@ -1,0 +1,5 @@
+# Szybsze załącznie ogrzewania obniżonego przez alarm
+automation_heating_time_restore:
+  name: "Automation heating time restore (lowered by Alarm)"
+  has_date: false
+  has_time: true

@@ -1,0 +1,156 @@
+# Spotify - Załączenie wybranej playlisty
+ # Pomocnicze - Włącz Onkyo, ustaw źródło
+onkyo_on_source_set:
+  alias: Onkyo ON, Source
+  mode: restart
+  sequence:
+    - service: media_player.turn_on
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+    - wait_template: "{{ is_state('media_player.onkyo_tx_nr656', 'on') }}"
+    - service: media_player.select_source
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+      data:
+        source: "network_net"
+    - service: media_player.select_source
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+      data:
+        source: "Onkyo TX-NR656"
+    - wait_template: "{{ is_state_attr('media_player.spotify_pawelz31_pl', 'source', 'Onkyo TX-NR656') }}"
+ # Pomocnicze - Miksuj listę piosenek, ustaw poziom głośności
+onkyo_shuffle_volume_set:
+  alias: Onkyo Set Shuffle, Next track and Volume to 40
+  mode: restart
+  sequence:
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+      data:
+        volume_level: 0.5
+    - service: media_player.shuffle_set
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+      data:
+        shuffle: true
+    - wait_template: "{{ is_state_attr('media_player.spotify_pawelz31_pl', 'shuffle', true) }}"
+    - service: media_player.media_next_track
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+  # Playlista Vintage Café
+playlista_vintage_cafe:
+  alias: Play Vintage Café
+  mode: restart
+  sequence:
+    - service: script.onkyo_on_source_set
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+      data:
+        media_content_id: !secret playlista_vintage_cafe
+        media_content_type: playlist
+    - service: script.onkyo_shuffle_volume_set
+  # Playlista Moja
+playlista_moja:
+  alias: Play Moja
+  mode: restart
+  sequence:
+    - service: script.onkyo_on_source_set
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+      data:
+        media_content_id: !secret playlista_moja
+        media_content_type: playlist
+    - service: script.onkyo_shuffle_volume_set
+  # Playlista Queen
+playlista_queen:
+  alias: Play Queen
+  mode: restart
+  sequence:
+    - service: script.onkyo_on_source_set
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+      data:
+        media_content_id: !secret playlista_queen
+        media_content_type: playlist
+    - service: script.onkyo_shuffle_volume_set
+  # Playlista Christmas
+playlista_christmas:
+  alias: Play Christmas
+  mode: restart
+  sequence:
+    - service: script.onkyo_on_source_set
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+      data:
+        media_content_id: !secret playlista_christmas
+        media_content_type: playlist
+    - service: script.onkyo_shuffle_volume_set
+  # Playlista MLE Work
+playlista_mle_work:
+  alias: Play MLE Work
+  mode: restart
+  sequence:
+    - service: script.onkyo_on_source_set
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+      data:
+        media_content_id: !secret playlista_mle_work
+        media_content_type: playlist
+    - service: script.onkyo_shuffle_volume_set
+  # Playlista Vintage Reggae Café
+playlista_vintage_reggae_cafe:
+  alias: Play Vintage Reggae Café
+  mode: restart
+  sequence:
+    - service: script.onkyo_on_source_set
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.spotify_pawelz31_pl
+      data:
+        media_content_id: !secret playlista_vintage_reggae_cafe
+        media_content_type: playlist
+    - service: script.onkyo_shuffle_volume_set
+
+# Amplituner Onkyo TX-NR656
+  # Wyłącz ampituner
+onkyo_off:
+  alias: Wyłącz amplituner
+  mode: single
+  sequence:
+    - service: media_player.turn_off
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+  # Zwiększ głośność
+onkyo_volume_up:
+  alias: Amplituner zwiększ głośność
+  mode: queued
+  sequence:
+    - service: media_player.volume_up
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+    - service: media_player.volume_up
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+    - service: media_player.volume_up
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+  # Zmniejsz głośność
+onkyo_volume_dwon:
+  alias: Amplituner zmniejsz głośność
+  mode: queued
+  sequence:
+    - service: media_player.volume_down
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+    - service: media_player.volume_down
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+    - service: media_player.volume_down
+      target:
+        entity_id: media_player.onkyo_tx_nr656
