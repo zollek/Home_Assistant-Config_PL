@@ -1,11 +1,8 @@
-# Zollek Home Assistant Configuration
+# Zollek's Home Assistant Configuration
+This is my Home Assistant configuration adapted to the flat.
 
-![Project Maintenance][maintenance-shield]
+I've few automations mainly for heating management based on window open/close state and alarm arming mode.  
+UI is desinged for easy control by a non-IT person with no knolage of the Home Assistant.
 
-[![GitHub Actions][actions-shield]][actions]
-[![GitHub Activity][commits-shield]][commits]
-[![GitHub Last Commit][last-commit-shield]][commits]
-
-![GitHub Stars][stars-shield]
-![GitHub Watchers][watchers-shield]
-![GitHub Forks][forks-shield]
+It's still work in progress so please be understanding.  
+Any advice or questions are welcome.
