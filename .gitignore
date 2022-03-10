@@ -19,12 +19,15 @@ deps
 image
 tts
 www/*/alarmo*
+image
 
 # !!!! Ignored secrets/important
 secrets.yaml
 known_devices.yaml
 google_calendars.yaml
 
+# Specific keeps
+!image/UI
 
 # Temporary ignores
 .old_config
