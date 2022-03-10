@@ -8,4 +8,4 @@ It's still work in progress so please be understanding.
 Any advice or questions are welcome.
 
 ## UI
-image/UI/UI.gif
+![UI image](image/UI/UI.gif)
