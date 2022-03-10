@@ -8,4 +8,4 @@ It's still work in progress so please be understanding.
 Any advice or questions are welcome.
 
 ## UI
-![UI image](image/UI/UI.gif =100x20)
+![UI image](image/UI/UI.gif)
