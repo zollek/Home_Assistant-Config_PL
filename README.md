@@ -8,4 +8,4 @@ It's still work in progress so please be understanding.
 Any advice or questions are welcome.
 
 ## UI
-[Contribution guidelines for this project](image/UI/UI.gif)
+image/UI/UI.gif
