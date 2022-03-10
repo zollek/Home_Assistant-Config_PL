@@ -19,7 +19,6 @@ deps
 image
 tts
 www/*/alarmo*
-image
 
 # !!!! Ignored secrets/important
 secrets.yaml
