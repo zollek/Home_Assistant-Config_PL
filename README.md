@@ -6,3 +6,6 @@ UI is desinged for easy control by a non-IT person with no knolage of the Home A
 
 It's still work in progress so please be understanding.  
 Any advice or questions are welcome.
+
+## UI
+[Contribution guidelines for this project](image/UI/UI.gif)
