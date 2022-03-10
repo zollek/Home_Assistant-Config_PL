@@ -13,7 +13,7 @@ Most of the configuration is English/Polish language mix.
 
 For my main panel I'm using Teclast P80 tablet.  
 It's mounted on a 3D printed wall mount.  
-Table charging it's controlled by and automation within 30%-80% battery charge level (prevents battery life).  
+Table charging it's controlled by an automation within 30%-80% battery level (preserves battery life).  
 [Buy Teclast P80 wall mount](https://hejdom.pl/sklep/produkt/8.html)
 
 In my weather card, for outside temperature and humidity I'm using Aquara sensor hidden in a 3D printed house shape box.  
