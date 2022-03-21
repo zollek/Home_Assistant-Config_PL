@@ -83,3 +83,20 @@
           camera.turn_on
         {% endif %}
       entity_id: camera.xiaomi_cloud_map_extractor
+
+# Ustawienie głośności na amplitunarze Onkyo TX-NR656
+- id: "20220313110915"
+  alias: "Onkyo TX-NR656 Volume Set"
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+  condition:
+    condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.onkyo_tx_nr656
+      data_template:
+        volume_level: "{{ ( trigger.to_state.state | int(0) ) / 80 }}"

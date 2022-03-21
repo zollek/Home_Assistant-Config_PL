@@ -1,0 +1,9 @@
+# Głośność muzyki Onkyo TX-NR656 - dB (Amplituner obsługuje wartości procentowe, gdzie WARTOŚĆ = USTAWIENIE / MAX, MAX=80, np. 0,5= 40 /80 )
+onkyo_tx_nr656_volume_db:
+  name: Głośność Onkyo TX-NR656 [db]
+  min: 0
+  max: 80
+  step: 3
+  mode: slider
+  unit_of_measurement: db
+  icon: mdi:volume-high

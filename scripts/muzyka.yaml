@@ -19,16 +19,11 @@ onkyo_on_source_set:
       data:
         source: "Onkyo TX-NR656"
     - wait_template: "{{ is_state_attr('media_player.spotify_pawelz31_pl', 'source', 'Onkyo TX-NR656') }}"
- # Pomocnicze - Miksuj listę piosenek, ustaw poziom głośności
+ # Pomocnicze - Miksuj listę piosenek
 onkyo_shuffle_volume_set:
-  alias: Onkyo Set Shuffle, Next track and Volume to 40
+  alias: Onkyo Set Shuffle, Next track and set Volume
   mode: restart
   sequence:
-    - service: media_player.volume_set
-      target:
-        entity_id: media_player.onkyo_tx_nr656
-      data:
-        volume_level: 0.5
     - service: media_player.shuffle_set
       target:
         entity_id: media_player.spotify_pawelz31_pl
@@ -50,6 +45,10 @@ playlista_vintage_cafe:
       data:
         media_content_id: !secret playlista_vintage_cafe
         media_content_type: playlist
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 30
     - service: script.onkyo_shuffle_volume_set
   # Playlista Moja
 playlista_moja:
@@ -63,6 +62,10 @@ playlista_moja:
       data:
         media_content_id: !secret playlista_moja
         media_content_type: playlist
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 40        
     - service: script.onkyo_shuffle_volume_set
   # Playlista Queen
 playlista_queen:
@@ -76,6 +79,10 @@ playlista_queen:
       data:
         media_content_id: !secret playlista_queen
         media_content_type: playlist
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 40        
     - service: script.onkyo_shuffle_volume_set
   # Playlista Christmas
 playlista_christmas:
@@ -89,6 +96,10 @@ playlista_christmas:
       data:
         media_content_id: !secret playlista_christmas
         media_content_type: playlist
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 40
     - service: script.onkyo_shuffle_volume_set
   # Playlista MLE Work
 playlista_mle_work:
@@ -102,6 +113,10 @@ playlista_mle_work:
       data:
         media_content_id: !secret playlista_mle_work
         media_content_type: playlist
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 30
     - service: script.onkyo_shuffle_volume_set
   # Playlista Vintage Reggae Café
 playlista_vintage_reggae_cafe:
@@ -115,6 +130,10 @@ playlista_vintage_reggae_cafe:
       data:
         media_content_id: !secret playlista_vintage_reggae_cafe
         media_content_type: playlist
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 30
     - service: script.onkyo_shuffle_volume_set
 
 # Amplituner Onkyo TX-NR656
@@ -131,26 +150,24 @@ onkyo_volume_up:
   alias: Amplituner zwiększ głośność
   mode: queued
   sequence:
-    - service: media_player.volume_up
-      target:
-        entity_id: media_player.onkyo_tx_nr656
-    - service: media_player.volume_up
-      target:
-        entity_id: media_player.onkyo_tx_nr656
-    - service: media_player.volume_up
-      target:
-        entity_id: media_player.onkyo_tx_nr656
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data_template:
+        value: >
+          {% set volume = states('input_number.onkyo_tx_nr656_volume_db') | int(0) %}
+          {% set step = state_attr('input_number.onkyo_tx_nr656_volume_db', 'step') | int(0) %}
+          {% set max = state_attr('input_number.onkyo_tx_nr656_volume_db', 'max') | int(0) %}
+          {{ iif( (volume + step) > max, max, volume + step ) }}
   # Zmniejsz głośność
 onkyo_volume_dwon:
   alias: Amplituner zmniejsz głośność
   mode: queued
   sequence:
-    - service: media_player.volume_down
-      target:
-        entity_id: media_player.onkyo_tx_nr656
-    - service: media_player.volume_down
-      target:
-        entity_id: media_player.onkyo_tx_nr656
-    - service: media_player.volume_down
-      target:
-        entity_id: media_player.onkyo_tx_nr656
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data_template:
+        value: >
+          {% set volume = states('input_number.onkyo_tx_nr656_volume_db') | int(0) %}
+          {% set step = state_attr('input_number.onkyo_tx_nr656_volume_db', 'step') | int(0) %}
+          {% set min = state_attr('input_number.onkyo_tx_nr656_volume_db', 'min') | int(0) %}
+          {{ iif( (volume - step) < min, min, volume - step ) }}
