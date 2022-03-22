@@ -24,27 +24,51 @@
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_balkon_alarm
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_window_salon_door_window_close_thermostat_restore_time') | float(0) %}
+                {% set itokno = states('input_number.termostat_salon_balkon_window') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_okno_alarm
             data_template:
-               value: "{{ state_attr('climate.termostat_salon_okno', 'temperature') | float(0) }}"
+               value: >
+                {% set time = states('sensor.automation_last_heating_window_salon_door_window_close_thermostat_restore_time') | float(0) %}
+                {% set itokno = states('input_number.termostat_salon_okno_window') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_okno', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_kuchnia_alarm
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_window_salon_door_window_close_thermostat_restore_time') | float(0) %}
+                {% set itokno = states('input_number.termostat_salon_kuchnia_window') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_sypialnia_alarm
             data_template:
-              value: "{{ state_attr('climate.termostat_sypialnia', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_window_sypialnia_glowna_window_close_thermostat_restore_time') | float(0) %}
+                {% set itokno = states('input_number.termostat_sypialnia_window') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_sypialnia', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_sypialnia_2_alarm
             data_template:
-              value: "{{ state_attr('climate.termostat_sypialnia_marta', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_window_sypialnia_marta_window_close_thermostat_restore_time') | float(0) %}
+                {% set itokno = states('input_number.termostat_sypialnia_2_window') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_sypialnia_marta', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_sypialnia_3_alarm
             data_template:
-              value: "{{ state_attr('climate.termostat_sypialnia_pawel', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_window_sypialnia_pawel_window_close_thermostat_restore_time') | float(0) %}
+                {% set itokno = states('input_number.termostat_sypialnia_3_window') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_sypialnia_pawel', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_lazienka_marta_alarm
             data_template:
