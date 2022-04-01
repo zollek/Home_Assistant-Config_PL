@@ -13,7 +13,7 @@
         entity_id: sensor.home_assistant_online_time
         above: 5
       - condition: template
-        value_template: "{{ '[Storage & Snapshots] Ejected external device \"ASMT 2115\"' in state_attr('sensor.backuphdd_status', 'body') }}"
+        value_template: "{{ iif( (states('sensor.backuphdd_status') not in ['unknown', 'unavailable', 'none']), ('[Storage & Snapshots] Ejected external device \"ASMT 2115\"' in state_attr('sensor.backuphdd_status', 'body')), 'False' ) }}"
   action:
   - service: switch.turn_off
     entity_id: switch.gniazdko_usb_hdd_backup_nas
@@ -22,7 +22,7 @@
 - id: "20220222175030"
   alias: "Uruchom kopię zapasową danych"
   trigger:
-  - entity_id: sensor.current_month
+  - entity_id: sensor.data_aktualny_miesiac
     platform: state
   condition:
     condition: and
@@ -31,7 +31,7 @@
         entity_id: sensor.home_assistant_online_time
         above: 5
       - condition: template
-        value_template: "{{ now().month in [1, 4, 7, 10] }}"
+        value_template: "{{ states('sensor.data_aktualny_miesiac') | int in [1, 4, 7, 10] }}"
   action:
   - service: switch.turn_on
     entity_id: switch.gniazdko_usb_hdd_backup_nas
