@@ -30,15 +30,27 @@
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_kuchnia_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_kuchnia_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_okno_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_okno', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_okno_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_okno', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_balkon_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_balkon_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
     - service: climate.set_temperature
       target:
         entity_id: climate.termostat_salon_kuchnia
@@ -83,15 +95,27 @@
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_kuchnia_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_kuchnia_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_okno_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_okno', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_okno_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_okno', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_balkon_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_balkon_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
     - service: climate.set_temperature
       target:
         entity_id: climate.termostat_salon_kuchnia
@@ -136,15 +160,27 @@
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_kuchnia_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_kuchnia_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_kuchnia', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_okno_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_okno', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_okno_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_okno', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_balkon_window
             data_template:
-              value: "{{ state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_salon_balkon_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_salon_balkon', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
     - service: climate.set_temperature
       target:
         entity_id: climate.termostat_salon_kuchnia
@@ -182,7 +218,11 @@
           - service: input_number.set_value
             entity_id: input_number.termostat_sypialnia_window
             data_template:
-              value: "{{ state_attr('climate.termostat_sypialnia', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_sypialnia_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_sypialnia', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
     - service: climate.set_temperature
       target:
         entity_id: climate.termostat_sypialnia
@@ -210,7 +250,11 @@
           - service: input_number.set_value
             entity_id: input_number.termostat_sypialnia_2_window
             data_template:
-              value: "{{ state_attr('climate.termostat_sypialnia_marta', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_sypialnia_2_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_sypialnia_marta', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
     - service: climate.set_temperature
       target:
         entity_id: climate.termostat_sypialnia_marta
@@ -238,7 +282,11 @@
           - service: input_number.set_value
             entity_id: input_number.termostat_sypialnia_3_window
             data_template:
-              value: "{{ state_attr('climate.termostat_sypialnia_pawel', 'temperature') | float(0) }}"
+              value: >
+                {% set time = states('sensor.automation_last_heating_away_lower_heating_temperature_when_away_night_based_on_alarm_mode_time') | float(0) %}
+                {% set itaokno = states('input_number.termostat_sypialnia_3_alarm') | float(0) %}
+                {% set tokno = state_attr('climate.termostat_sypialnia_pawel', 'temperature') | float(0) %}
+                {{ iif( time > 6, tokno, itaokno ) }}
     - service: climate.set_temperature
       target:
         entity_id: climate.termostat_sypialnia_pawel

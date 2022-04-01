@@ -32,7 +32,7 @@
           - service: input_number.set_value
             entity_id: input_number.termostat_salon_okno_alarm
             data_template:
-               value: >
+              value: >
                 {% set time = states('sensor.automation_last_heating_window_salon_door_window_close_thermostat_restore_time') | float(0) %}
                 {% set itokno = states('input_number.termostat_salon_okno_window') | float(0) %}
                 {% set tokno = state_attr('climate.termostat_salon_okno', 'temperature') | float(0) %}
@@ -91,7 +91,7 @@
     - service: script.heating_helpers_lower_temperature
     # Opóźnienie
     - delay:
-        seconds: 5
+        seconds: 2
     # Ustawienie temperatury na termostatach
     - service: script.heating_set_thermostats
 
@@ -118,7 +118,7 @@
     - service: script.heating_helpers_rise_temperature
    # Opóźnienie
     - delay:
-        seconds: 5
+        seconds: 2
    # Ustawienie temperatury na termostatach
     - service: script.heating_set_thermostats
 
@@ -147,7 +147,7 @@
     - service: script.heating_helpers_rise_temperature
    # Opóźnienie
     - delay:
-        seconds: 5
+        seconds: 2
    # Ustawienie temperatury na termostatach
     - service: script.heating_set_thermostats
    # Wyłącz automatyzację podnoszenie temperatury przez godzinę
