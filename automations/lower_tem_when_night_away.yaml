@@ -7,7 +7,7 @@
     - platform: state
       entity_id: 
         - alarm_control_panel.dom_2
-      to: 'armed_vacation'
+      to: "armed_vacation"
   condition:
     condition: numeric_state
     entity_id: sensor.home_assistant_online_time
@@ -102,7 +102,7 @@
     - platform: state
       entity_id: 
         - alarm_control_panel.dom_2
-      from: 'armed_vacation'
+      from: "armed_vacation"
   action:
    # Wyłącz automatyzację podnoszenie temperatury jeżeli jest włączona
     - choose:

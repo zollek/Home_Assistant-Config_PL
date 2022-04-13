@@ -4,7 +4,7 @@
 # Salon
 # Czujnik Salon Balkon
 - id: "20211222100600"
-  alias: HEATING WINDOW Salon balkon door open thermostat OFF
+  alias: "HEATING WINDOW Salon balkon door open thermostat OFF"
   trigger:
     - platform: state
       entity_id: binary_sensor.czujnik_otwarcia_drzwi_balkonowe_sensor

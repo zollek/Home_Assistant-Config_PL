@@ -1,7 +1,7 @@
 # id adding template: RRRRmmDDhhMMss
 
 # Powiadomienie o alarmie
-#- alias: 'Powiadomienie o alarmie'
+#- alias: "Powiadomienie o alarmie"
 #  trigger:
 #    - platform: state
 #      entity_id: alarm_control_panel.dom_2
@@ -13,17 +13,17 @@
 #        data:
 #          photo:
 #            - file: /media/graphics/Thief.png
-#              caption: ''
+#              caption: ""
 
 # Powiadomienie o niskim stanie baterii
 - id: "20211222100901"
   alias: "Sprawdzanie i powiadomienie o nikim poziomie baterii"
-  description: ''
+  description: ""
   use_blueprint:
     path: homeassistant/low-battery-level-detection-notification-for-all-battery-sensors.yaml
     input:
       day: 0
-      time: '18:00:00'
+      time: "18:00:00"
       threshold: 45
       exclude:
         entity_id:
@@ -32,11 +32,39 @@
       actions:
       - service: notify.telegram_zollek
         data:
-          message: ''
+          message: ""
           data:
             photo:
               - file: /config/www/graphics/low_battery.png
-                caption: ''
+                caption: ""
       - service: notify.telegram_zollek
         data:
-          message: 'Urządzenie o niskim stanie baterii: {{sensors|replace("_"," ")}}'
+          message: "Urządzenie o niskim stanie baterii: {{sensors|replace('_',' ')}}"
+
+# Powiadomienie o niedziałającym czujniku
+- id: "20220413191615"
+  alias: "Powiadomienie o niedziałającym czujniku środowiskowym"
+  trigger:
+    - platform: state
+      entity_id: 
+        - sensor.czujnik_xiaomi_zewnetrzny_pressure
+        - sensor.czujnik_xiaomi_salon_pressure
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+      - condition: template
+        value_template: "{{ ( ((states('sensor.czujnik_xiaomi_zewnetrzny_pressure') | float(0)) - (states('sensor.czujnik_xiaomi_salon_pressure') | float(0))) | abs ) > 1.5 }}"
+  action:
+    - service: notify.telegram_zollek
+      data:
+        message: "Sprawdź czujniki środowiskowe"
+    - service: notify.telegram_zollek
+      data:
+        message: ""
+        data:
+          photo:
+            - file: /config/www/graphics/Aqara.png
+              caption: ""
