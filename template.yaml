@@ -4,11 +4,23 @@
       state: "{{ (as_timestamp(now()) - as_timestamp(states('sensor.home_assistant_start_time'))) // 60 }}"
       unit_of_measurement: "minute"
 
-# Aktualny miesiąc
+# Data
+ # Aktualny miesiąc
 - sensor:
     - name: "Data - aktualny miesiąc"
       state: "{{ as_timestamp(states('sensor.date_time_iso')) | timestamp_custom('%-m') }}"
-      unit_of_measurement: "month number"
+      unit_of_measurement: "month"
+
+# Czujnik temperatury ze względu na czas
+ # Aktualna godzina
+- sensor:
+    - name: "Air Temperature"
+      state: >
+        {% set H = (as_timestamp(states('sensor.date_time_iso')) | timestamp_custom('%-H')) | int(0) %}
+        {% set xiaomi = states('sensor.czujnik_xiaomi_zewnetrzny_temperature') | float(0) %}
+        {% set netatmo = states('sensor.netatmo_gdansk_jasien_ujescicsko_lostowice_kowale_temperature') | float(0)  %}
+        {{ iif( H < 9, netatmo, xiaomi) }}
+      unit_of_measurement: "°C"
 
 #Czujniki pogody dla AccuWeather:
   # Aktualne warunki
@@ -176,7 +188,7 @@
 - sensor:
     - name: "Czujnik Xiaomi Zewnetrzny Feels Like"
       state: >
-        {% set T = (( states('sensor.czujnik_xiaomi_zewnetrzny_temperature') |float(0))*1.8)+32 %}
+        {% set T = (( states('sensor.air_temperature') |float(0))*1.8)+32 %}
         {% set RH = states('sensor.czujnik_xiaomi_zewnetrzny_humidity')|float(0) %}
         {% set STEADMAN_HI = 0.5 * (T + 61.0 + ((T-68.0)*1.2) + (RH*0.094)) %}
         {% if STEADMAN_HI >= 80 %}
@@ -194,6 +206,27 @@
         {% endif %}
         {% set HI_C = (HI-32)/1.8 %}
         {{- HI_C|round(1) -}}
+
+# Czujniki pogody Airly
+ # Airly Sensors
+- sensor:
+    - name: "Airly Sensor CAQI Level"
+      state: >
+        {% set level = state_attr('sensor.airly_sensor_caqi','level') %}
+        {% set levels = {'very low':'Wspaniałe powietrze!', 'low':'Ujdzie, ale bywało lepiej.', 'medium':'Jakość powietrza jest średnia.', 'high':'Słaba jakość powietrza!', 'very high':'Zła jakość powietrza!', 'extreme':'Bardzo duże zanieczyszczenie!', 'airmageddon!':'Ekstremalnie duże zanieczyszczenie!'} %}
+        {{ levels[level] }}
+- sensor:
+    - name: "Airly Sensor CAQI PM"
+      state: "{{ states('sensor.airly_sensor_caqi') }}"
+      unit_of_measurement: "CAQI (PM)"
+- sensor:
+    - name: "Airly Sensor PM2.5 Percent"
+      state: "{{ state_attr('sensor.airly_sensor_pm2_5','percent') }}"
+      unit_of_measurement: "%"
+- sensor:
+    - name: "Airly Sensor PM10 Percent"
+      state: "{{ state_attr('sensor.airly_sensor_pm10','percent') }}"
+      unit_of_measurement: "%"
 
 # Czas od ostatniego uruchomienia automatyki w minutach
   # Ogrzewanie Otwarcie Okno Salon
