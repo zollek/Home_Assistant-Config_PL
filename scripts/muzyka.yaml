@@ -10,17 +10,12 @@ onkyo_on_source_set:
     - wait_template: "{{ is_state('media_player.onkyo_tx_nr656', 'on') }}"
     - service: media_player.select_source
       target:
-        entity_id: media_player.onkyo_tx_nr656
-      data:
-        source: "network_net"
-    - service: media_player.select_source
-      target:
         entity_id: media_player.spotify_pawelz31_pl
       data:
         source: "Onkyo TX-NR656"
     - wait_template: "{{ is_state_attr('media_player.spotify_pawelz31_pl', 'source', 'Onkyo TX-NR656') }}"
  # Pomocnicze - Miksuj listę piosenek
-onkyo_shuffle_volume_set:
+onkyo_shuffle_next:
   alias: Onkyo Set Shuffle, Next track and set Volume
   mode: restart
   sequence:
@@ -39,6 +34,10 @@ playlista_vintage_cafe:
   mode: restart
   sequence:
     - service: script.onkyo_on_source_set
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 20
     - service: media_player.play_media
       target:
         entity_id: media_player.spotify_pawelz31_pl
@@ -49,13 +48,17 @@ playlista_vintage_cafe:
       entity_id: input_number.onkyo_tx_nr656_volume_db
       data:
         value: 30
-    - service: script.onkyo_shuffle_volume_set
+    - service: script.onkyo_shuffle_next
   # Playlista Moja
 playlista_moja:
   alias: Play Moja
   mode: restart
   sequence:
     - service: script.onkyo_on_source_set
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 20
     - service: media_player.play_media
       target:
         entity_id: media_player.spotify_pawelz31_pl
@@ -66,13 +69,17 @@ playlista_moja:
       entity_id: input_number.onkyo_tx_nr656_volume_db
       data:
         value: 40        
-    - service: script.onkyo_shuffle_volume_set
+    - service: script.onkyo_shuffle_next
   # Playlista Queen
 playlista_queen:
   alias: Play Queen
   mode: restart
   sequence:
     - service: script.onkyo_on_source_set
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 20
     - service: media_player.play_media
       target:
         entity_id: media_player.spotify_pawelz31_pl
@@ -83,13 +90,17 @@ playlista_queen:
       entity_id: input_number.onkyo_tx_nr656_volume_db
       data:
         value: 40        
-    - service: script.onkyo_shuffle_volume_set
+    - service: script.onkyo_shuffle_next
   # Playlista Christmas
 playlista_christmas:
   alias: Play Christmas
   mode: restart
   sequence:
     - service: script.onkyo_on_source_set
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 20
     - service: media_player.play_media
       target:
         entity_id: media_player.spotify_pawelz31_pl
@@ -100,13 +111,17 @@ playlista_christmas:
       entity_id: input_number.onkyo_tx_nr656_volume_db
       data:
         value: 40
-    - service: script.onkyo_shuffle_volume_set
+    - service: script.onkyo_shuffle_next
   # Playlista MLE Work
 playlista_mle_work:
   alias: Play MLE Work
   mode: restart
   sequence:
     - service: script.onkyo_on_source_set
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 20
     - service: media_player.play_media
       target:
         entity_id: media_player.spotify_pawelz31_pl
@@ -117,13 +132,17 @@ playlista_mle_work:
       entity_id: input_number.onkyo_tx_nr656_volume_db
       data:
         value: 30
-    - service: script.onkyo_shuffle_volume_set
+    - service: script.onkyo_shuffle_next
   # Playlista Vintage Reggae Café
 playlista_vintage_reggae_cafe:
   alias: Play Vintage Reggae Café
   mode: restart
   sequence:
     - service: script.onkyo_on_source_set
+    - service: input_number.set_value
+      entity_id: input_number.onkyo_tx_nr656_volume_db
+      data:
+        value: 20
     - service: media_player.play_media
       target:
         entity_id: media_player.spotify_pawelz31_pl
@@ -134,7 +153,7 @@ playlista_vintage_reggae_cafe:
       entity_id: input_number.onkyo_tx_nr656_volume_db
       data:
         value: 30
-    - service: script.onkyo_shuffle_volume_set
+    - service: script.onkyo_shuffle_next
 
 # Amplituner Onkyo TX-NR656
   # Wyłącz ampituner
