@@ -100,3 +100,23 @@
         entity_id: media_player.onkyo_tx_nr656
       data_template:
         volume_level: "{{ ( trigger.to_state.state | int(0) ) / 80 }}"
+
+# Wyłącz amplituner przy wyłączeniu tv
+- id: "20220424113705"
+  alias: "Wyłącz amplituner przy wyłączeniu TV"
+  trigger:
+    - platform: state
+      entity_id: media_player.tv_salon
+      to: "off"
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.home_assistant_online_time
+        above: 5
+      - condition: template
+        value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+      - condition: template
+        value_template: "{{ is_state('media_player.onkyo_tx_nr656', 'on') }}"
+  action:
+    - service: script.onkyo_off
