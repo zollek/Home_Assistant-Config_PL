@@ -138,6 +138,8 @@
       - condition: numeric_state
         entity_id: sensor.home_assistant_online_time
         above: 5
+      - condition: template
+        value_template: "{{ states('sensor.date') == states('input_datetime.automation_heating_date_restore') }}"
   action:
    # Wyłącz automatyzację podnoszenie temperatury przez alarm
     - service: automation.turn_off
@@ -154,3 +156,20 @@
     - service: automation.turn_off
       target:
         entity_id: automation.heating_away_restore_heating_temperature_at_time
+
+# Ustawienie dzisiejszej daty przy załączniu ogrzewania o określonej godzinie
+- id: "20220416194330"
+  alias: "HEATING AWAY Restore heating temperature at time set current date"
+  trigger:
+    - platform: state
+      entity_id: automation.heating_away_restore_heating_temperature_at_time
+      to: "on"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.automation_heating_date_restore
+      data:
+        date: "{{ states('sensor.date') }}"
