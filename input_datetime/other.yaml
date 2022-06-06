@@ -3,3 +3,8 @@ automation_heating_time_restore:
   name: "Automation heating time restore (lowered by Alarm)"
   has_date: false
   has_time: true
+
+automation_heating_date_restore:
+  name: "Automation heating date restore (lowered by Alarm)"
+  has_date: true
+  has_time: false
