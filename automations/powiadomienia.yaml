@@ -44,19 +44,22 @@
 # Powiadomienie o niedziałającym czujniku
 - id: "20220413191615"
   alias: "Powiadomienie o niedziałającym czujniku środowiskowym"
+  mode: single
   trigger:
-    - platform: state
-      entity_id: 
-        - sensor.czujnik_xiaomi_zewnetrzny_pressure
-        - sensor.czujnik_xiaomi_salon_pressure
+    - platform: time_pattern
+      hours: "*"
   condition:
     condition: and
     conditions:
       - condition: numeric_state
         entity_id: sensor.home_assistant_online_time
         above: 5
-      - condition: template
-        value_template: "{{ ( ((states('sensor.czujnik_xiaomi_zewnetrzny_pressure') | float(0)) - (states('sensor.czujnik_xiaomi_salon_pressure') | float(0))) | abs ) > 1.5 }}"
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ ((as_timestamp(now()) - as_timestamp(states.sensor.czujnik_xiaomi_zewnetrzny_temperature.last_updated, 0)) | int(10) //60) > 60 }}"
+          - condition: template
+            value_template: "{{ ((as_timestamp(now()) - as_timestamp(states.sensor.czujnik_xiaomi_salon_temperature.last_updated, 0)) | int(10) //60) > 60 }}"
   action:
     - service: notify.telegram_zollek
       data:
