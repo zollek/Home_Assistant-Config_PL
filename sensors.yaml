@@ -10,14 +10,6 @@
     - "date_time"
     - "date_time_iso"
 
-# Czujnik baterii tabletu WallPanel
-- platform: mqtt
-  state_topic: "wallpanel/mywallpanel/sensor/battery"
-  name: "WallPanel Poziom baterii"
-  unit_of_measurement: "%"
-  value_template: "{{ value_json.value }}"
-  device_class: battery
-
 # Powiadomienia o stanie dysku backup zNAS
 - platform: imap_email_content
   server: imap.gmail.com
