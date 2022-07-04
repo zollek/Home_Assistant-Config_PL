@@ -1,7 +1,0 @@
-- platform: mqtt
-  state_topic: "wallpanel/mywallpanel/sensor/battery"
-  name: "WallPanel Ładowanie"
-  value_template: '{{ value_json.charging }}'
-  payload_on: true
-  payload_off: false
-  device_class: battery_charging
