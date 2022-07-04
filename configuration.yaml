@@ -23,12 +23,10 @@ input_datetime: !include_dir_merge_named input_datetime/
 
 script: !include_dir_merge_named scripts/
 
+mqtt: !include mqtt.yaml
+
 homeassistant:
   customize: !include customize.yaml
-
-google:
-  client_id: !secret google_calendar_client_id
-  client_secret: !secret google_calendar_client_secret
 
 telegram_bot:
   - platform: polling
@@ -40,10 +38,6 @@ notify:
   - platform: telegram
     name: telegram_Zollek
     chat_id: !secret main_chat_id
-
-spotify:
-  client_id: !secret spotify_client_id
-  client_secret: !secret spotify_client_secret
 
 media_player:
   - platform: onkyo
