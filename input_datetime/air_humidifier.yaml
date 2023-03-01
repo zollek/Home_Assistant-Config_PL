@@ -1,0 +1,5 @@
+# SMARTMI czas od ostatniej wymiany wody
+smartmi_airhumidityfier_water_replace:
+  name: "Smartmi Ostatnia wymiana wody"
+  has_date: true
+  has_time: true

@@ -1,19 +1,8 @@
 # id adding template: RRRRmmDDhhMMss
 
-# Zarządzeniem ładowania tabletu
-- id: "20211222100313"
-  alias: "Zarządzanie ładowaniem tabletu WallPanel"
-  description: Ładowanie tabletu na podstawie stanu baterii
-  use_blueprint:
-    path: homeassistant/battery_charging_on-off.yaml
-    input:
-      discharged_percent: '30'
-      switch: switch.gniazdko_tablet_wallpanel
-      phone_battery: sensor.wallpanel_poziom_baterii
-
-# Wyłącz amplituner przy wyjściu z mieszkania
+# Wyłącz przy wyjściu z mieszkania
 - id: "20211222100329"
-  alias: "AWAY Wyłącz amplituner"
+  alias: "AWAY Wyłącz"
   trigger:
     - platform: state
       entity_id: 
@@ -27,43 +16,69 @@
     above: 5
   action:
     - service: script.onkyo_off
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_switch_corridor
+    - service: switch.turn_off
+      target:
+        entity_id: light.light_dimmer_balcony
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_fan_switch_kitchen_l1
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_switch_storage_l1
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_switch_sypialnia_2_l1
 
-# Wyłącz choinkę przy wyjściu z mieszkania
+# Zarządzeniem ładowania tabletu
+- id: "20211222100313"
+  alias: "Zarządzanie ładowaniem tabletu WallPanel"
+  description: Ładowanie tabletu na podstawie stanu baterii
+  use_blueprint:
+    path: homeassistant/battery_charging_on-off.yaml
+    input:
+      discharged_percent: '30'
+      switch: switch.gniazdko_tablet_wallpanel
+      phone_battery: sensor.wallpanel_poziom_baterii
+
+# Włącz/Wyłącz choinkę przy wyjściu z mieszkania
 - id: "20211222100341"
-  alias: "CHRISTMAS Wyłącz choinkę"
+  alias: "CHRISTMAS Włącz/Wyłącz choinkę"
+  mode: single
   trigger:
     - platform: state
-      entity_id: 
-        - alarm_control_panel.dom_2
+      entity_id: alarm_control_panel.dom_2
       to:
         - "armed_away"
         - "armed_vacation"
         - "armed_night"
-  condition:
-    condition: numeric_state
-    entity_id: sensor.home_assistant_online_time
-    above: 5
-  action:
-    - service: switch.turn_off
-      target:
-        entity_id: switch.gniazdko_keemple
-
-# Włącz choinkę po przyjściu do mieszkania
-- id: "20211222100401"
-  alias: "CHRISTMAS Włącz choinkę"
-  trigger:
+      id: "OFF"
     - platform: state
-      entity_id: 
-        - alarm_control_panel.dom_2
+      entity_id: alarm_control_panel.dom_2
       to: "disarmed"
+      id: "ON"
   condition:
     condition: numeric_state
     entity_id: sensor.home_assistant_online_time
     above: 5
   action:
-    - service: switch.turn_on
-      target:
-        entity_id: switch.gniazdko_keemple
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: "OFF"
+        sequence:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.gniazdko_keemple
+      - conditions:
+          - condition: trigger
+            id: "ON"
+        sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.gniazdko_keemple
 
 # Dezaktywuje aktualizacją mapy odkurzacza gdy jest w bazie
 - id: "20211222100418"
@@ -120,3 +135,82 @@
         value_template: "{{ is_state('media_player.onkyo_tx_nr656', 'on') }}"
   action:
     - service: script.onkyo_off
+
+# Włącz/Wyłącz nawilżacz
+- id: "202302181522"
+  alias: "HUMIDITYFIER Włącz/Wyłącz nawilżacz Smartmi"
+  mode: single
+  trigger:
+  - platform: state
+    entity_id: schedule.smartmi_airhumidityfier_schedule
+    to: "on"
+    id: "ON"
+  - platform: state
+    entity_id: schedule.smartmi_airhumidityfier_schedule
+    to: "off"
+    id: "OFF"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: "ON"
+      sequence:
+      - if:
+        - or:
+          - not:
+            - condition: state
+              entity_id: alarm_control_panel.dom_2
+              state: "armed_vacation"
+          - and:
+            - condition: state
+              entity_id: alarm_control_panel.dom_2
+              state: armed_vacation
+            - condition: template
+              value_template: "{{ states('sensor.date') == states('input_datetime.automation_heating_date_restore') }}"
+        then:
+        - service: humidifier.turn_on
+          target:
+            entity_id: humidifier.smartmi_pure_evaporative_air_humidifier
+    - conditions:
+      - condition: trigger
+        id: "OFF"
+      sequence:
+      - service: humidifier.turn_off
+        target:
+          entity_id: humidifier.smartmi_pure_evaporative_air_humidifier
+
+# Czesio - automatyczne odkurzanie
+- id: "20230221053430"
+  alias: "ROBOROCK full house cleaning"
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.dom_2
+      to: 
+      - "armed_vacation"
+      - "armed_away"
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  - not:
+    - condition: state
+      entity_id: script.roborock_hoovering
+      state: "on"
+  - condition: template
+    value_template: "{{ states('sensor.czesio_last_full_apartment_cleaning') | int(100) > 72 }}"
+  action:
+  - parallel:
+    - service: script.roborock_hoovering
+    - sequence:
+      - delay:
+          seconds: 15
+      - service: notify.telegram_zollek
+        data:
+          message: "Czesio - sprzątanie całego mieszkania"

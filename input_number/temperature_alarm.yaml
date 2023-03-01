@@ -69,3 +69,12 @@ termostat_lazienka_pawel_alarm:
   mode: slider
   unit_of_measurement: °C
   icon: mdi:database-arrow-left-outline
+
+alram_change_temperature_value:
+  name: ALARM zmiana temperatury
+  min: 0.0
+  max: 5.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:snowflake-thermometer

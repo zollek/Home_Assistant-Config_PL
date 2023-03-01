@@ -254,3 +254,16 @@
     - name: "Automation Last HEATING AWAY Lower heating temperature when away night based on Alarm mode Time"
       state:  "{{ (as_timestamp(now()) - as_timestamp(state_attr('automation.heating_away_restore_heating_temperature_when_away_night_disarmed_based_on_alarm_mode', 'last_triggered'), 0)) | int(10) // 60 }}"
       unit_of_measurement: "minute"
+
+# SMARTMI Pure Evaporative Air Humidifier
+  # Wymiana wody
+- sensor:
+    - name: Smartmi Airhumidityfier Water Replace
+      state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.smartmi_airhumidityfier_water_replace'), 0)) | int(10)  // 3600 }}"
+      unit_of_measurement: "hours"
+
+# Czesio czas od ostatniego odkurzania
+- sensor:
+    - name: Czesio last full apartment cleaning
+      state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.czesio_last_full_apartment_cleaning'), 0)) | int(10)  // 3600 }}"
+      unit_of_measurement: "hours"

@@ -1,0 +1,8 @@
+# Tryb działania
+smartmi_airhumidityfier_mode:
+   name: Smartmi Operation mode
+   options:
+    - Auto
+    - Silent
+    - Medium
+    - High

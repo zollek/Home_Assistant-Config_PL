@@ -1,0 +1,16 @@
+# Szybsze załącznie ogrzewania obniżonego przez alarm
+automation_heating_time_restore:
+  name: "Automation heating time restore (lowered by Alarm)"
+  has_date: false
+  has_time: true
+
+automation_heating_date_restore:
+  name: "Automation heating date restore (lowered by Alarm)"
+  has_date: true
+  has_time: false
+
+# Czesio data od ostatniego odkurzania
+czesio_last_full_apartment_cleaning:
+  name: "Czesio last full apartment cleaning"
+  has_date: true
+  has_time: true

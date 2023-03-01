@@ -20,6 +20,7 @@ roborock_mop:
     data:
       entity_id: vacuum.czesio
       fan_speed: Gentle
+
   # Czesio - odkurzanie całego mieszkania
 roborock_hoovering:
   alias: Czesio odkurzanie
@@ -32,11 +33,25 @@ roborock_hoovering:
     data:
       entity_id: vacuum.czesio
       fan_speed: Turbo
+  - wait_template: "{{ is_state('vacuum.czesio', 'cleaning') }}"
+  - delay:
+      minutes: 2
+  - service: input_datetime.set_datetime
+    entity_id: input_datetime.czesio_last_full_apartment_cleaning
+    data:
+      timestamp: "{{ as_timestamp(now()) }}"
+  - service: input_number.increment
+    target:
+      entity_id: input_number.roborock_cleaning_counter
+
   # Czesio - Zatrzymanie aktualnie wykonywanych zadań i powrót do bazy
 roborock_home:
   alias: Czesio powrót do bazy
   mode: single
   sequence:
+  - service: homeassistant.turn_off
+    target:
+      entity_id: script.roborock_hoovering
   - service: vacuum.stop
     data:
       entity_id: vacuum.czesio
@@ -44,3 +59,13 @@ roborock_home:
   - service: vacuum.return_to_base
     data:
       entity_id: vacuum.czesio
+
+ # Reset licznika pojmenika na kurz
+roborock_empty_dustbin_counter_reset:
+  alias: "Czesio - reset liczby odkurzeń"
+  mode: single
+  sequence:
+    - service: input_number.set_value
+      entity_id: input_number.roborock_cleaning_counter
+      data:
+        value: 0

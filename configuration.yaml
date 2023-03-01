@@ -20,6 +20,8 @@ automation ui: !include automations.yaml
 
 input_number: !include_dir_merge_named input_number/
 input_datetime: !include_dir_merge_named input_datetime/
+input_select: !include_dir_merge_named input_select/
+schedule: !include_dir_merge_named input_schedule/
 
 script: !include_dir_merge_named scripts/
 

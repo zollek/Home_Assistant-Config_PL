@@ -1,0 +1,24 @@
+# Włącz/wyłącz nawilżacz Smartmi
+smartmi_airhumidityfier_schedule:
+  name: "Smartmi schedule"
+  monday:
+    - from: "07:40:00"
+      to: "22:00:00"
+  tuesday:
+    - from: "06:30:00"
+      to: "22:00:00"
+  wednesday:
+    - from: "06:30:00"
+      to: "22:00:00"
+  thursday:
+    - from: "06:30:00"
+      to: "22:00:00"
+  friday:
+    - from: "07:40:00"
+      to: "23:00:00"
+  saturday:
+    - from: "09:00:00"
+      to: "23:00:00"
+  sunday:
+    - from: "09:00:00"
+      to: "22:00:00"

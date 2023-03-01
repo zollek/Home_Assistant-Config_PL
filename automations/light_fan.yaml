@@ -1,0 +1,93 @@
+# id adding template: RRRRmmDDhhMMss
+
+# BALKON
+  # Balkon, ustaw jasność max po włączeniu
+- id: "20230115213245"
+  alias: "LIGHT Balcony max brightness after on"
+  trigger:
+    - platform: state
+      entity_id: light.light_dimmer_balcony
+      to: "on"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - service: light.turn_on
+      data:
+        brightness_pct: 100
+      target:
+        entity_id: light.light_dimmer_balcony
+
+  # Wyłącz światło na balkonie po czasie
+- id: "202302191402"
+  alias: "LIGHT Wyłącz po czasie - Balkon"
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: light.light_dimmer_balcony
+      to: "on"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - delay:
+        minutes: 60
+    - service: switch.turn_off
+      target:
+        entity_id: light.light_dimmer_balcony
+
+# Pomieszczenie gospodarcze
+ # Włącz/Wyłącz światło pomieszczenie gospodarcze
+- id: "20230219184730"
+  alias: "LIGHT Włącz/Wyłącz - Storage"
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_drzwi_pomieszczenie_gospodarcze_sensor
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+  - choose:
+    - conditions: "{{ is_state('binary_sensor.czujnik_otwarcia_drzwi_pomieszczenie_gospodarcze_sensor','off') }}"
+      sequence:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.light_switch_storage_l1
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: sun
+          before: sunrise
+          before_offset: "01:00:00"
+          after: sunset
+          after_offset: "-01:00:00"
+        - "{{ is_state('binary_sensor.czujnik_otwarcia_drzwi_pomieszczenie_gospodarcze_sensor','on') }}"
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.light_switch_storage_l1
+
+# Wentylator
+ # Kuchnia
+  # Wyłącz wentylator po czasie wentylator Kuchnia
+- id: "20230218134330"
+  alias: "FAN Wyłącz po czasie - Kuchnia"
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: switch.light_fan_switch_kitchen_l2
+      to: "on"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+    - delay:
+        minutes: 30
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_fan_switch_kitchen_l2

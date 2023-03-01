@@ -1,0 +1,9 @@
+# Poziom wilgotności
+smartmi_airhumidityfier_humidity:
+  name: Smartmi Wilgotność
+  min: 30
+  max: 80
+  step: 5
+  mode: slider
+  unit_of_measurement: '%'
+  icon: hass:water-percent

@@ -1,7 +1,3 @@
-# Czas uruchomienia Home Assistant
-- platform: uptime
-  name: "Home Assistant Start Time"
-
 # Data, czas oraz data+czas
 - platform: time_date
   display_options:

@@ -1,0 +1,9 @@
+# Nawilżacz - reset licznika wymiany wody
+smartmi_airhumidityfier_water_replace_reset:
+  alias: Smartmi Nawilżacz - licznik wymiany wody
+  mode: single
+  sequence:
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.smartmi_airhumidityfier_water_replace
+      data:
+        timestamp: "{{ as_timestamp(now()) }}"

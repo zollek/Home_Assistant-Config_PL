@@ -10,10 +10,10 @@ onkyo_on_source_set:
     - wait_template: "{{ is_state('media_player.onkyo_tx_nr656', 'on') }}"
     - service: media_player.select_source
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
       data:
         source: "Onkyo TX-NR656"
-    - wait_template: "{{ is_state_attr('media_player.spotify_pawelz31_pl', 'source', 'Onkyo TX-NR656') }}"
+    - wait_template: "{{ is_state_attr('media_player.spotify_dom', 'source', 'Onkyo TX-NR656') }}"
  # Pomocnicze - Miksuj listę piosenek
 onkyo_shuffle_next:
   alias: Onkyo Set Shuffle, Next track and set Volume
@@ -21,13 +21,13 @@ onkyo_shuffle_next:
   sequence:
     - service: media_player.shuffle_set
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
       data:
         shuffle: true
-    - wait_template: "{{ is_state_attr('media_player.spotify_pawelz31_pl', 'shuffle', true) }}"
+    - wait_template: "{{ is_state_attr('media_player.spotify_dom', 'shuffle', true) }}"
     - service: media_player.media_next_track
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
   # Playlista Vintage Café
 playlista_vintage_cafe:
   alias: Play Vintage Café
@@ -40,7 +40,7 @@ playlista_vintage_cafe:
         value: 20
     - service: media_player.play_media
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
       data:
         media_content_id: !secret playlista_vintage_cafe
         media_content_type: playlist
@@ -61,7 +61,7 @@ playlista_moja:
         value: 20
     - service: media_player.play_media
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
       data:
         media_content_id: !secret playlista_moja
         media_content_type: playlist
@@ -82,7 +82,7 @@ playlista_queen:
         value: 20
     - service: media_player.play_media
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
       data:
         media_content_id: !secret playlista_queen
         media_content_type: playlist
@@ -103,7 +103,7 @@ playlista_christmas:
         value: 20
     - service: media_player.play_media
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
       data:
         media_content_id: !secret playlista_christmas
         media_content_type: playlist
@@ -124,7 +124,7 @@ playlista_mle_work:
         value: 20
     - service: media_player.play_media
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
       data:
         media_content_id: !secret playlista_mle_work
         media_content_type: playlist
@@ -145,7 +145,7 @@ playlista_vintage_reggae_cafe:
         value: 20
     - service: media_player.play_media
       target:
-        entity_id: media_player.spotify_pawelz31_pl
+        entity_id: media_player.spotify_dom
       data:
         media_content_id: !secret playlista_vintage_reggae_cafe
         media_content_type: playlist
