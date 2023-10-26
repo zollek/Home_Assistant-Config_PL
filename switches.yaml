@@ -1,0 +1,53 @@
+# Włącz/wyłącz automatyzacje nawilżacza
+- platform: template
+  switches:
+    humidityfier_automations:
+      friendly_name: "Nawilżacz powietrza - użytkowanie"
+      value_template: "{{ is_state('automation.humidityfier_wlacz_wylacz_nawilzacz_smartmi', 'on') }}"
+      turn_on:
+      - service: automation.turn_on
+        target:
+          entity_id: 
+          - automation.humidityfier_wlacz_wylacz_nawilzacz_smartmi
+          - automation.humidityfier_water_level_notification
+          - automation.humidityfier_water_replace_notification
+      turn_off:
+      - service: automation.turn_off
+        target:
+          entity_id: 
+          - automation.humidityfier_wlacz_wylacz_nawilzacz_smartmi
+          - automation.humidityfier_water_level_notification
+          - automation.humidityfier_water_replace_notification
+
+# Włącz/wyłącz zasilanie w biurze
+- platform: template
+  switches:
+    dummy_switch_biuro_action:
+      friendly_name: "Dummy Switch Biuro action"
+      value_template: "{{ is_state('switch.gniazdko_keemple_biuro', 'on') }}"
+      turn_on:
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.dummy_switch_biuro_state
+        data:
+          option: single
+      - delay:
+          seconds: 1
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.dummy_switch_biuro_state
+        data:
+          option: none
+      turn_off:
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.dummy_switch_biuro_state
+        data:
+          option: hold
+      - delay:
+          seconds: 1
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.dummy_switch_biuro_state
+        data:
+          option: none

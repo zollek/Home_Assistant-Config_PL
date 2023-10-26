@@ -1,17 +1,38 @@
+binary_sensor:
 # WallPanel
  # Battery charging status
-binary_sensor:
   - name: "WallPanel Ładowanie"
     state_topic: "wallpanel/mywallpanel/sensor/battery"
     value_template: '{{ value_json.charging }}'
     payload_on: true
     payload_off: false
     device_class: battery_charging
+   # Motion
+  - name: "WallPanel Motion"
+    state_topic: "wallpanel/mywallpanel/sensor/motion"
+    value_template: '{{ value_json.value }}'
+    payload_on: true
+    payload_off: false
+    device_class: motion
+ # Screen State
+  - name: "WallPanel Screen State"
+    state_topic: "wallpanel/mywallpanel/state"
+    value_template: "{{ value_json.screenOn }}"
+    payload_on: true
+    payload_off: false
 
- # Battery level
+
 sensor:
+# WallPanel
+ # Battery level
   - name: "WallPanel Poziom baterii"
     state_topic: "wallpanel/mywallpanel/sensor/battery"
     unit_of_measurement: "%"
     value_template: "{{ value_json.value }}"
     device_class: battery
+ # URL
+  - name: "WallPanel currentUrl"
+    state_topic: "wallpanel/mywallpanel/state"
+    value_template: "{{ value_json.currentUrl }}"
+
+

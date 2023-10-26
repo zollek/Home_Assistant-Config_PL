@@ -14,3 +14,9 @@ czesio_last_full_apartment_cleaning:
   name: "Czesio last full apartment cleaning"
   has_date: true
   has_time: true
+
+# Czesio error
+czesio_last_error_automation_run:
+  name: "Czesio last error automation run"
+  has_date: true
+  has_time: true

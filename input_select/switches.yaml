@@ -1,0 +1,8 @@
+# Tryb działania
+dummy_switch_biuro_state:
+   name: Dummy Switch Biuro stan
+   options:
+    - single
+    - double
+    - hold
+    - none

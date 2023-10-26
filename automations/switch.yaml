@@ -1,0 +1,100 @@
+# id adding template: RRRRmmDDhhMMss 20220126204731
+
+#Praca
+ # Załącz biurko i ogrzewanie
+- id: "20230406132415"
+  alias: "SWITCH Start work"
+  trigger:
+  - platform: state
+    entity_id:
+      - sensor.wireless_switch_biuro_action
+      - input_select.dummy_switch_biuro_state
+    to: single
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: state
+    entity_id: automation.messaging_office_power_on
+    state: "off"
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.gniazdko_keemple_biuro
+  - service: automation.turn_on
+    target:
+      entity_id: automation.messaging_office_power_on
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_2_contact
+        state: "off"
+      sequence:
+      - service: input_number.set_value
+        entity_id: input_number.termostat_sypialnia_2_window_work
+        data_template:
+          value: >
+            {% set time = states('sensor.automation_last_heating_window_sypialnia_marta_window_close_thermostat_restore_time') | float(0) %}
+            {% set itokno = states('input_number.termostat_sypialnia_2_window') | float(0) %}
+            {% set tokno = state_attr('climate.termostat_sypialnia_marta', 'temperature') | float(0) %}
+            {{ iif( time > 6, tokno, itokno ) }}
+      - service: climate.set_temperature
+        target:
+          entity_id: climate.termostat_sypialnia_marta
+        data_template:
+          temperature: "{{ states('input_number.work_office_temperature_value') | float(0) }}"
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_2_contact
+        state: "on"
+      sequence:
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.termostat_sypialnia_2_window
+        data_template:
+          value: "{{ states('input_number.work_office_temperature_value') | float(0) }}"
+
+ # Wyłącz biurko i ogrzewanie
+- id: "20230406132445"
+  alias: "SWITCH Finished work"
+  trigger:
+  - platform: state
+    entity_id: 
+      - sensor.wireless_switch_biuro_action
+      - input_select.dummy_switch_biuro_state
+    to: hold
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: state
+    entity_id: automation.messaging_office_power_on
+    state: "on"
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id: switch.gniazdko_keemple_biuro
+  - service: automation.turn_off
+    target:
+      entity_id: automation.messaging_office_power_on
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_2_contact
+        state: "off"
+      sequence:
+      - service: climate.set_temperature
+        target:
+          entity_id: climate.termostat_sypialnia_marta
+        data_template:
+          temperature: "{{ states('input_number.termostat_sypialnia_2_window_work') | float(0) }}"
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.czujnik_otwarcia_okno_sypialnia_2_contact
+        state: "on"
+      sequence:
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.termostat_sypialnia_2_window
+        data:
+          value: "{{ states('input_number.termostat_sypialnia_2_window_work') | float(0) }}"

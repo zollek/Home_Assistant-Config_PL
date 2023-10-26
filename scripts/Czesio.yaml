@@ -47,7 +47,7 @@ roborock_hoovering:
   # Czesio - Zatrzymanie aktualnie wykonywanych zadań i powrót do bazy
 roborock_home:
   alias: Czesio powrót do bazy
-  mode: single
+  mode: restart
   sequence:
   - service: homeassistant.turn_off
     target:
@@ -69,3 +69,14 @@ roborock_empty_dustbin_counter_reset:
       entity_id: input_number.roborock_cleaning_counter
       data:
         value: 0
+
+  # Czyszczenie mieszkania na wilgotno (mopowanie wybranych pomieszczeń)
+roborock_charging_error:
+  alias: Czesio - błąd podczas dokowania 
+  mode: single
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.czesio
+      command: app_goto_target
+      params: [23700,26000]

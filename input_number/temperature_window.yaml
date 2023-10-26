@@ -43,6 +43,15 @@ termostat_sypialnia_2_window:
   unit_of_measurement: °C
   icon: mdi:database-arrow-left-outline
 
+termostat_sypialnia_2_window_work:
+  name: OKNO Termostat Sypialnia Marta Praca
+  min: -50.0
+  max: 50.0
+  step: 0.5
+  mode: slider
+  unit_of_measurement: °C
+  icon: mdi:database-arrow-left-outline
+
 termostat_sypialnia_3_window:
   name: OKNO Termostat Sypialnia Paweł
   min: -50.0

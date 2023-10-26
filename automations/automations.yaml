@@ -1,4 +1,4 @@
-# id adding template: RRRRmmDDhhMMss
+# id template: RRRRmmDDhhMMss
 
 # Wyłącz przy wyjściu z mieszkania
 - id: "20211222100329"
@@ -31,17 +31,83 @@
     - service: switch.turn_off
       target:
         entity_id: switch.light_switch_sypialnia_2_l1
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_switch_sypialnia_2_l2
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_switch_sypialnia_3_l1
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_switch_sypialnia_3_l2
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_fan_switch_bathroom_1_l2
+    - service: switch.turn_off
+      target:
+        entity_id: switch.light_fan_switch_bathroom_2_l2
 
+#WallPanel
 # Zarządzeniem ładowania tabletu
 - id: "20211222100313"
-  alias: "Zarządzanie ładowaniem tabletu WallPanel"
+  alias: "WALLPANEL Zarządzanie ładowaniem tabletu"
   description: Ładowanie tabletu na podstawie stanu baterii
   use_blueprint:
     path: homeassistant/battery_charging_on-off.yaml
     input:
-      discharged_percent: '30'
+      discharged_percent: '40'
       switch: switch.gniazdko_tablet_wallpanel
       phone_battery: sensor.wallpanel_poziom_baterii
+
+ # Wybudzenie przy wejściu do mieszkania
+- id: "220230524102315"
+  alias: "WALLPANEL Screen wake on apartment entry"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.dom_2
+    to: "pending"
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+  - service: mqtt.publish
+    data:
+      qos: "0"
+      retain: false
+      topic: wallpanel/mywallpanel/command
+      payload: "{'wake': true, 'wakeTime': 90}"
+
+ # Wybudzenie gdy ciemno
+- id: "20230602060930"
+  alias: "WALLPANEL Screen wake when dark"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.czujnik_pir_motion_detection
+    to: "on"
+  condition:
+    and:
+    - condition: numeric_state
+      entity_id: sensor.home_assistant_online_time
+      above: 5
+    - "{{ trigger.to_state.state != trigger.from_state.state }}"
+    - "{{ states('sensor.czujnik_pir_illuminance')|int(0) <= 3 }}"
+    - or:
+      - condition: state
+        entity_id: schedule.smartmi_airhumidityfier_schedule
+        state: "on"
+      - condition: state
+        entity_id: switch.gniazdko_keemple_biuro
+        state: "on"
+  action:
+  - service: mqtt.publish
+    data:
+      qos: "0"
+      retain: false
+      topic: wallpanel/mywallpanel/command
+      payload: "{'wake': true}"
 
 # Włącz/Wyłącz choinkę przy wyjściu z mieszkania
 - id: "20211222100341"
@@ -168,7 +234,7 @@
           - and:
             - condition: state
               entity_id: alarm_control_panel.dom_2
-              state: armed_vacation
+              state: "armed_vacation"
             - condition: template
               value_template: "{{ states('sensor.date') == states('input_datetime.automation_heating_date_restore') }}"
         then:
@@ -214,3 +280,4 @@
       - service: notify.telegram_zollek
         data:
           message: "Czesio - sprzątanie całego mieszkania"
+

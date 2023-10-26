@@ -7,3 +7,13 @@ smartmi_airhumidityfier_humidity:
   mode: slider
   unit_of_measurement: '%'
   icon: hass:water-percent
+
+# Poziom wody - próg wymiany
+smartmi_airhumidityfier_water_level_treshold:
+  name: Smartmi poziom wody - próg wymiany
+  min: 0
+  max: 100
+  step: 1
+  mode: slider
+  unit_of_measurement: '%'
+  icon: hass:water-percent

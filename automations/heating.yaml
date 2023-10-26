@@ -178,51 +178,63 @@
 - id: "20230221064715"
   alias: "HEATING Bathroom temperature sensors update"
   trigger:
+  # run every X hours
   - platform: time_pattern
-    hours: /4
+    hours: /6
     minutes: 5
   condition:
   - condition: numeric_state
     entity_id: sensor.home_assistant_online_time
     above: 5
   action:
-  # Podłogówka Paweł
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: climate.termostat_lazienka_pawel_podlogowka
-        state: "off"
-      sequence:
-      - service: climate.turn_on
-        target:
+  - parallel:
+    # Podłogówka Paweł
+    - choose:
+      - conditions:
+        - condition: state
           entity_id: climate.termostat_lazienka_pawel_podlogowka
-      - service: climate.set_temperature
-        target:
-          entity_id: climate.termostat_lazienka_pawel_podlogowka
-        data:
-          temperature: 10
-      - delay:
-          seconds: 5
-      - service: climate.turn_off
-        target:
-          entity_id: climate.termostat_lazienka_pawel_podlogowka
-# Podłogówka Marta
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: climate.termostat_lazienka_marta_podlogowka
-        state: "off"
-      sequence:
-      - service: climate.turn_on
-        target:
+          state: "off"
+        sequence:
+        - service: climate.turn_on
+          target:
+            entity_id: climate.termostat_lazienka_pawel_podlogowka
+        - service: climate.set_temperature
+          target:
+            entity_id: climate.termostat_lazienka_pawel_podlogowka
+          data:
+            temperature: 10
+        - delay:
+            seconds: 10
+        - service: climate.turn_off
+          target:
+            entity_id: climate.termostat_lazienka_pawel_podlogowka
+        - delay:
+            seconds: 15
+        - service: climate.turn_off
+          target:
+            entity_id: climate.termostat_lazienka_pawel_podlogowka
+  # Podłogówka Marta
+    - choose:
+      - conditions:
+        - condition: state
           entity_id: climate.termostat_lazienka_marta_podlogowka
-      - service: climate.set_temperature
-        target:
-          entity_id: climate.termostat_lazienka_marta_podlogowka
-        data:
-          temperature: 10
-      - delay:
-          seconds: 5
-      - service: climate.turn_off
-        target:
-          entity_id: climate.termostat_lazienka_marta_podlogowka
+          state: "off"
+        sequence:
+        - service: climate.turn_on
+          target:
+            entity_id: climate.termostat_lazienka_marta_podlogowka
+        - service: climate.set_temperature
+          target:
+            entity_id: climate.termostat_lazienka_marta_podlogowka
+          data:
+            temperature: 10
+        - delay:
+            seconds: 10
+        - service: climate.turn_off
+          target:
+            entity_id: climate.termostat_lazienka_marta_podlogowka
+        - delay:
+            seconds: 15
+        - service: climate.turn_off
+          target:
+            entity_id: climate.termostat_lazienka_marta_podlogowka

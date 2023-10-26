@@ -26,14 +26,20 @@
   trigger:
     - platform: state
       entity_id: light.light_dimmer_balcony
-      to: "on"
+    - platform: state
+      entity_id: binary_sensor.czujnik_otwarcia_drzwi_balkonowe_sensor
   condition:
-    condition: numeric_state
-    entity_id: sensor.home_assistant_online_time
-    above: 5
+    - condition: numeric_state
+      entity_id: sensor.home_assistant_online_time
+      above: 5
   action:
+    - condition: state
+      entity_id: light.light_dimmer_balcony
+      state: "on"
     - delay:
         minutes: 60
+    - condition: template
+      value_template: "{{ is_state('light.light_dimmer_balcony','on') }}"
     - service: switch.turn_off
       target:
         entity_id: light.light_dimmer_balcony
@@ -52,24 +58,29 @@
     above: 5
   action:
   - choose:
+  # Dzrwi zamknięte - czujnik drzwi OFF
     - conditions: "{{ is_state('binary_sensor.czujnik_otwarcia_drzwi_pomieszczenie_gospodarcze_sensor','off') }}"
       sequence:
       - service: switch.turn_off
         target:
           entity_id: switch.light_switch_storage_l1
-    - conditions:
-      - condition: and
-        conditions:
-        - condition: sun
-          before: sunrise
-          before_offset: "01:00:00"
-          after: sunset
-          after_offset: "-01:00:00"
-        - "{{ is_state('binary_sensor.czujnik_otwarcia_drzwi_pomieszczenie_gospodarcze_sensor','on') }}"
+  # Drzwi otwarte - czujnik drzwi ON
+    - conditions: "{{ is_state('binary_sensor.czujnik_otwarcia_drzwi_pomieszczenie_gospodarcze_sensor','on') }}"
       sequence:
-      - service: switch.turn_on
-        target:
-          entity_id: switch.light_switch_storage_l1
+      - choose:
+        - conditions:
+          - "{{ is_state('switch.light_switch_corridor','on') }}"
+          sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.light_switch_storage_l1
+        - conditions:
+          - "{{ is_state('switch.light_switch_corridor','off') }}"
+          - "{{ states('sensor.czujnik_pir_illuminance')|int(0) < 50 }}"
+          sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.light_switch_storage_l1
 
 # Wentylator
  # Kuchnia
@@ -78,16 +89,201 @@
   alias: "FAN Wyłącz po czasie - Kuchnia"
   mode: restart
   trigger:
-    - platform: state
-      entity_id: switch.light_fan_switch_kitchen_l2
-      to: "on"
+  - platform: state
+    entity_id: switch.light_fan_switch_kitchen_l2
   condition:
-    condition: numeric_state
+  - condition: numeric_state
     entity_id: sensor.home_assistant_online_time
     above: 5
   action:
-    - delay:
-        minutes: 30
-    - service: switch.turn_off
-      target:
-        entity_id: switch.light_fan_switch_kitchen_l2
+  - condition: state
+    entity_id: switch.light_fan_switch_kitchen_l2
+    state: "on"
+  - delay:
+      minutes: 30
+  - condition: template
+    value_template: "{{ is_state('switch.light_fan_switch_kitchen_l2','on') }}"
+  - service: switch.turn_off
+    target:
+      entity_id: switch.light_fan_switch_kitchen_l2
+
+ # Łazienka Paweł
+- id: "20230303141730"
+  alias: "FAN Wyłącz po czasie - Łazienka Paweł"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: switch.light_fan_switch_bathroom_1_l1
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+  - condition: state
+    entity_id: switch.light_fan_switch_bathroom_1_l1
+    state: "on"
+  - wait_template: "{{ is_state('switch.light_fan_switch_bathroom_1_l2', 'off') }}"
+    timeout: "01:30:00"
+  - delay:
+      minutes: 15
+  - condition: template
+    value_template: "{{ is_state('switch.light_fan_switch_bathroom_1_l1','on') }}"
+  - service: switch.turn_off
+    target:
+      entity_id: switch.light_fan_switch_bathroom_1_l1
+
+ # Łazienka Marta
+- id: "20230303142630"
+  alias: "FAN Wyłącz po czasie - Łazienka Marta"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: switch.light_fan_switch_bathroom_2_l1
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+  - condition: state
+    entity_id: switch.light_fan_switch_bathroom_2_l1
+    state: "on"
+  - wait_template: "{{ is_state('switch.light_fan_switch_bathroom_2_l2', 'off') }}"
+    timeout: "01:30:00"
+  - delay:
+      minutes: 15
+  - condition: template
+    value_template: "{{ is_state('switch.light_fan_switch_bathroom_2_l1','on') }}"
+  - service: switch.turn_off
+    target:
+      entity_id: switch.light_fan_switch_bathroom_2_l1
+
+# Schowek
+ # Wyzwolone przez suszarkę
+- id: "20230303152530"
+  alias: "FAN Włącz/Wyłącz wentylator schowek"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: sensor.gniazdko_suszarka_power_trigger
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state | int(0) > 0 }}"
+      - condition: template
+        value_template: "{{ is_state('switch.fan_storage_l1','off') }}"
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.fan_storage_l1
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state | int(0) == 0 }}"
+      - condition: template
+        value_template: "{{ is_state('switch.fan_storage_l1','on') }}"
+      sequence:
+      - delay: 
+          minutes: 60
+      - condition: template
+        value_template: "{{ sensor.gniazdko_suszarka_power_trigger | int(0) == 0 }}"
+      - service: switch.turn_off
+        target:
+          entity_id: switch.fan_storage_l1
+
+ # Wyłącz po czasie
+- id: "20231024142615"
+  alias: "FAN Wyłącz po czasie - Schowek"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: switch.fan_storage_l1
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: state
+    entity_id: switch.fan_storage_l1
+    state: "on"
+  - condition: template
+    value_template: "{{ states('sensor.gniazdko_suszarka_power_trigger') | int(0) == 0 }}"
+  action:
+  - delay:
+      minutes: 30
+  - condition: template
+    value_template: "{{ states('sensor.gniazdko_suszarka_power_trigger') | int(0) == 0 }}"
+  - service: switch.turn_off
+    target:
+      entity_id: switch.fan_storage_l1
+
+
+# Łazienki - wyłącz światło po czasie
+ # Łazienka Paweł
+- id: "20230303145115"
+  alias: "LIGHT Wyłącz po czasie - Łazienka Paweł"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: switch.light_fan_switch_bathroom_1_l2
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+  - condition: state
+    entity_id: switch.light_fan_switch_bathroom_1_l2
+    state: "on"
+  - delay:
+      minutes: 60
+  - condition: template
+    value_template: "{{ is_state('switch.light_fan_switch_bathroom_1_l2','on') }}"
+  - service: switch.turn_off
+    target:
+      entity_id: switch.light_fan_switch_bathroom_1_l2
+
+ # Łazienka Marta
+- id: "20230303145230"
+  alias: "LIGHT Wyłącz po czasie - Łazienka Marta"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: switch.light_fan_switch_bathroom_2_l2
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  action:
+  - condition: state
+    entity_id: switch.light_fan_switch_bathroom_2_l2
+    state: "on"
+  - delay:
+      minutes: 60
+  - condition: template
+    value_template: "{{ is_state('switch.light_fan_switch_bathroom_2_l2','on') }}"
+  - service: switch.turn_off
+    target:
+      entity_id: switch.light_fan_switch_bathroom_2_l2
+
+# Korytarz
+ # Włącz światło po wejściu do mieszkania
+- id: "20230602055430"
+  alias: "LIGHT Włącz po wejściu - Korytarz"
+  mode: restart
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.dom_2
+    to: "pending"
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - "{{ states('sensor.czujnik_pir_illuminance')|int(0) <= 20 }}"
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.light_switch_corridor

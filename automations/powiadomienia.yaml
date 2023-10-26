@@ -120,11 +120,61 @@
               data:
                 message: "Sprawdź połączenie i koordynator Zigbee"
 
+# WallPanel - powiadomienie o problemach z ładowaniem
+- id: "20230317092215"
+  alias: "WALLPANEL Powiadomienie o problemach z zasilaniem"
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: sensor.wallpanel_poziom_baterii
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state | int(0) > states('input_number.wallpanel_notification_battery_level_treshold') | int(0) }}"
+      sequence:
+      - service: input_number.set_value
+        entity_id: input_number.wallpanel_notification_battery_level_treshold
+        data:
+          value: "{{ trigger.to_state.state | int(0) }}"
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state | int(0) < states('input_number.wallpanel_notification_battery_level_treshold') | int(0) }}"
+      - condition: template
+        value_template: "{{ states('sensor.wallpanel_poziom_baterii') | int(0) in [35, 30, 25, 20, 15, 10, 5, 0] }}"
+      sequence:
+      - wait_template: "{{ is_state('schedule.notification_schedule', 'on') }}"
+        timeout: "13:00:00"
+      - service: notify.telegram_zollek
+        data:
+          message: "WallPanel - Problem z ładowaniem. Pozostało {{ trigger.to_state.state | int(0) }}% baterii."
+      - service: input_number.set_value
+        entity_id: input_number.wallpanel_notification_battery_level_treshold
+        data:
+          value: "{{ trigger.to_state.state | int(0) }}"
+      - condition: state
+        entity_id: alarm_control_panel.dom_2
+        state: "disarmed"
+      - delay:
+          minutes: 1
+      - service: mqtt.publish
+        data:
+          qos: "0"
+          retain: false
+          topic: wallpanel/mywallpanel/command
+          payload: "{'speak':'Sprawdź ładowanie tabletu obsługi Smart Dom. Pozostało {{ trigger.to_state.state | int(0) }}% baterii !'}"
+
 # Czesio
  # Czesio - Powiadomienie o błędzie
 - id: "20230221172130"
   alias: "ROBOROCK Error notification"
-  mode: single
+  mode: restart
   trigger:
     - platform: state
       entity_id: vacuum.czesio
@@ -136,26 +186,41 @@
   - condition: template
     value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
   action:
-  - service: notify.telegram_zollek
-    data:
-      message: "Czesio - BŁĄD"
-  - condition: state
-    entity_id: alarm_control_panel.dom_2
-    state: "disarmed"
-  - delay:
-      minutes: 1
-  - service: mqtt.publish
-    data:
-      qos: "0"
-      retain: false
-      topic: wallpanel/mywallpanel/command
-      payload: "{'speak':'Błąd odkurzacza Czesio. Sprawdź odkurzacz!'}"
-    
+  - if:
+    - condition: template
+      value_template: "{{ trigger.from_state.state == 'returning' }}"
+    - condition: template
+      value_template: "{{ states('sensor.czesio_last_error_automation_run') | int(0) > 5 }}"
+    then:
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.czesio_last_error_automation_run
+      data:
+        timestamp: "{{ as_timestamp(now()) }}"
+    - delay:
+        seconds: 30
+    - service: script.roborock_charging_error
+    - wait_template: "{{ is_state('vacuum.czesio', 'idle') }}"
+    - service: script.roborock_home
+    else:
+    - service: notify.telegram_zollek
+      data:
+        message: "Czesio - BŁĄD"
+    - condition: state
+      entity_id: alarm_control_panel.dom_2
+      state: "disarmed"
+    - delay:
+        minutes: 1
+    - service: mqtt.publish
+      data:
+        qos: "0"
+        retain: false
+        topic: wallpanel/mywallpanel/command
+        payload: "{'speak':'Błąd odkurzacza Czesio. Sprawdź odkurzacz!'}"
 
  # Czesio - Powiadomienie o opróżniu pojemnika
 - id: "220230221173630"
   alias: "ROBOROCK Empty dust bin"
-  mode: single
+  mode: restart
   trigger:
     - platform: state
       entity_id: input_number.roborock_cleaning_counter
@@ -163,17 +228,22 @@
   - condition: numeric_state
     entity_id: sensor.home_assistant_online_time
     above: 5
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.dom_2
+        state: "armed_vacation"
   - condition: template
     value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
   - condition: template
-    value_template: "{{ states('input_number.roborock_cleaning_counter') | int(0) > 9 }}"
+    value_template: "{{ states('input_number.roborock_cleaning_counter') | int(0) > 7 }}"
   action:
+  - wait_template: "{{ is_state('alarm_control_panel.dom_2', 'disarmed') }}"
+  - delay:
+      minutes: 2
   - service: notify.telegram_zollek
     data:
       message: "Czesio - Opróżnij pojemnik na kurz"
-  - condition: state
-    entity_id: alarm_control_panel.dom_2
-    state: "disarmed"
   - service: mqtt.publish
     data:
       qos: "0"
@@ -206,6 +276,35 @@
       retain: false
       topic: wallpanel/mywallpanel/command
       payload: "{'speak':'Pozostało 30 sekund! '}"
+ 
+ #Suszarka - wyjmij ubrania
+- id: "20230317121015"
+  alias: "MESSAGING MQTT Empty dryer"
+  mode: single
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.gniazdko_suszarka_power
+    below: 70
+    for:
+      seconds: 60
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: state
+    entity_id: alarm_control_panel.dom_2
+    state: "disarmed"
+  - condition: template
+    value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.czujnik_otwarcia_drzwi_pomieszczenie_gospodarcze_sensor.last_updated, 0)) | int(100) > 60 }}"
+  - condition: template
+    value_template: "{{ ((as_timestamp(now()) - as_timestamp(state_attr('automation.messaging_mqtt_empty_dryer', 'last_triggered'), 0)) | int(60) // 60) > 10 }}"
+  action:
+  - service: mqtt.publish
+    data:
+      qos: "0"
+      retain: false
+      topic: wallpanel/mywallpanel/command
+      payload: "{'speak':'Suszenie zakończone. Wyjmij ubrania.'}"
 
 # HUMIDITYFIER
  # Powiadomienie o niskim poziomie wody
@@ -219,28 +318,76 @@
   - condition: numeric_state
     entity_id: sensor.home_assistant_online_time
     above: 5
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.dom_2
+        state: "armed_vacation"
   - condition: template
-    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
-  - condition: template
-    value_template: "{{ states('sensor.smartmi_pure_evaporative_air_humidifier_water_level') | int(0) in [40, 30, 20, 15, 10, 5] }}"
-  - condition: state
-    entity_id: schedule.notification_schedule
-    state: "on"
+    value_template: "{{ ((trigger.to_state.state | int(0)) //5) != ((trigger.from_state.state | int(0)) //5) }}"
   action:
-  - service: notify.telegram_zollek
-    data:
-      message: "Nawilżacz - niski poziom wody: {{ trigger.to_state.state }}%"
-  - condition: state
-    entity_id: alarm_control_panel.dom_2
-    state: "disarmed"
-  - delay:
-      minutes: 1
-  - service: mqtt.publish
-    data:
-      qos: "0"
-      retain: false
-      topic: wallpanel/mywallpanel/command
-      payload: "{'speak':'Niski poziom wody w nawilżaczu. Pozostało {{ trigger.to_state.state }} procent'}"
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state | int(0) > 79 }}"
+      sequence:
+      - service: input_number.set_value
+        entity_id: input_number.smartmi_airhumidityfier_water_level_treshold
+        data:
+          value: "{{ trigger.to_state.state | int(0) }}"
+      - delay:
+          minutes: 5
+      - choose:
+        - conditions:
+          - condition: not
+            conditions:
+            - condition: state
+              entity_id: select.smartmi_pure_evaporative_air_humidifier_led_brightness
+              state: "off"
+          sequence:
+          - service: select.select_option
+            entity_id: select.smartmi_pure_evaporative_air_humidifier_led_brightness
+            data:
+              option: "off"
+    - conditions:
+      - condition: template
+        value_template: "{{ states('sensor.smartmi_pure_evaporative_air_humidifier_water_level') | int(0) in [39, 29, 19, 9] }}"
+      - condition: template
+        value_template: "{{ trigger.to_state.state | int(0) < states('input_number.smartmi_airhumidityfier_water_level_treshold') | int(0) }}"
+      - condition: state
+        entity_id: schedule.notification_schedule
+        state: "on"
+      sequence:
+      - service: input_number.set_value
+        entity_id: input_number.smartmi_airhumidityfier_water_level_treshold
+        data:
+          value: "{{ trigger.to_state.state | int(0) }}"
+      - choose:
+        - conditions:
+          - condition: not
+            conditions:
+            - condition: state
+              entity_id: select.smartmi_pure_evaporative_air_humidifier_led_brightness
+              state: "dim"
+          sequence:
+          - service: select.select_option
+            entity_id: select.smartmi_pure_evaporative_air_humidifier_led_brightness
+            data:
+              option: "dim"    
+      - service: notify.telegram_zollek
+        data:
+          message: "Nawilżacz - niski poziom wody: {{ trigger.to_state.state | int(0) +1 }}%"
+      - condition: state
+        entity_id: alarm_control_panel.dom_2
+        state: "disarmed"
+      - delay:
+          minutes: 1
+      - service: mqtt.publish
+        data:
+          qos: "0"
+          retain: false
+          topic: wallpanel/mywallpanel/command
+          payload: "{'speak':'Niski poziom wody w nawilżaczu. Pozostało {{ trigger.to_state.state | int(0) +1 }} procent'}"
 
  # Powiadomienie o wymianie wody
 - id: "20230228203800"
@@ -253,11 +400,16 @@
   - condition: numeric_state
     entity_id: sensor.home_assistant_online_time
     above: 5
-  - condition: template
-    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  - condition: not
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.dom_2
+        state: "armed_vacation"
   - condition: state
     entity_id: schedule.notification_schedule
     state: "on"
+  - condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
   - condition: template
     value_template: "{{ states('sensor.smartmi_airhumidityfier_water_replace') | int(100) > 72 }}"
   - condition: template
@@ -277,3 +429,59 @@
       retain: false
       topic: wallpanel/mywallpanel/command
       payload: "{'speak':'Wymień wodę w nawilżaczu.'}"
+
+ # Powiadomienie o zasilaniu w biurze
+- id: "20230406143415"
+  alias: "MESSAGING Office power on"
+  mode: single
+  trigger:
+  - platform: time_pattern
+    minutes: 10
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: state
+    entity_id: schedule.notification_schedule
+    state: "on"
+  - condition: template
+    value_template: "{{ ( as_timestamp(now()) - as_timestamp(state_attr('automation.switch_start_work', 'last_triggered'), 0)) | int(0) > 46800 }}"
+  action:
+  - service: notify.telegram_zollek
+    data:
+      message: "Biuro - wyłącz zasilanie, czas działania: {{ ( as_timestamp(now()) - as_timestamp(state_attr('automation.switch_start_work', 'last_triggered'), 0)) | int(0) //3600 }}h {{ (( as_timestamp(now()) - as_timestamp(state_attr('automation.switch_start_work', 'last_triggered'), 0)) | int(0) %3600)//60 }}m"
+  - condition: state
+    entity_id: alarm_control_panel.dom_2
+    state: "disarmed"
+  - delay:
+      minutes: 1
+  - service: mqtt.publish
+    data:
+      qos: "0"
+      retain: false
+      topic: wallpanel/mywallpanel/command
+      payload: "{'speak':'Wyłącz zasilanie w biurze'}"
+
+#Temporary - motion
+- id: "20230524130515"
+  alias: "MESSAGING TELEGRAM Motion"
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: 
+        - binary_sensor.wallpanel_motion
+        - binary_sensor.czujnik_pir_motion_detection
+      to: "on"
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.home_assistant_online_time
+    above: 5
+  - condition: state
+    entity_id: alarm_control_panel.dom_2
+    state: 
+      - "armed_away"
+      - "armed_vacation"
+  action:
+  - service: notify.telegram_zollek
+    data:
+      message: "Wykryto ruch: {{ trigger.to_state.name }}"

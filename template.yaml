@@ -267,3 +267,30 @@
     - name: Czesio last full apartment cleaning
       state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.czesio_last_full_apartment_cleaning'), 0)) | int(10)  // 3600 }}"
       unit_of_measurement: "hours"
+
+# Czesio last error automation run
+- sensor:
+    - name: Czesio last error automation run
+      state:  "{{ (as_timestamp(now()) - as_timestamp(states('input_datetime.czesio_last_error_automation_run'), 0)) | int(10)  // 60 }}"
+      unit_of_measurement: "minute"
+
+# Wentylator
+- sensor:
+    - name: Gniazdko Suszarka Power Trigger
+      state:  "{{ states('sensor.gniazdko_suszarka_power') | int(0)  // 100 }}"
+
+# Powiadomienia o stanie dysku backup zNAS
+- trigger:
+    - platform: event
+      event_type: "imap_content"
+      id: "BackupHDD_event"
+      event_data:
+        sender: !secret qnap_mail
+  sensor:
+    - name: "BackupHDD Status"
+      state: >-
+        {% if '[Storage & Snapshots] Ejected external device \"ASMT 2115\"' in trigger.event.data["text"] %}
+          Eject
+        {% else %}
+          Wait
+        {% endif %}
